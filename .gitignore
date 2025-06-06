@@ -134,3 +134,15 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+
+#user added
+public/bundle.js
+production.json
+development.json
+.env
+node_modules/
+dist/
+*.log
+.DS_Store
+Thumbs.db
