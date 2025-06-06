@@ -1,0 +1,27 @@
+{
+  "name": "e-kanteki-board",
+  "version": "1.0.0",
+  "description": "scoreboard for kyudo",
+  "license": "MIT",
+  "author": "Kengo Ogata",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "typeCheck": "tsc --noEmit",
+    "build": "node build.mjs",
+    "start": "node start.mjs"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.30",
+    "dompurify": "^3.2.6",
+    "esbuild": "^0.25.5",
+    "json5": "^2.2.3",
+    "zod": "^3.25.51"
+  },
+  "dependencies": {
+    "@types/gapi": "^0.0.47",
+    "@types/gapi.client.sheets-v4": "^0.0.4",
+    "@types/google.accounts": "^0.0.16"
+  }
+}

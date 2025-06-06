@@ -1,0 +1,274 @@
+/* ===============================================
+  Scoreboard Container (#scoreboard)
+  スコアボード全体のコンテナスタイル
+   =============================================== */
+#scoreboard{
+  display:flex;
+  flex-direction: row-reverse;
+  align-items: end;
+  /* Box Model */
+  width: min(62vw, calc(62svh * (16 / 9)));
+  height: 100%;
+  margin-left:min(1vh, calc(1vw * (9 / 16)));
+  padding: 0;
+  padding-left: min(11vh, calc(11vw * (9 / 16)));
+  
+  /* Appearance */
+  background-color: #e29d4e;
+
+  overflow-x: scroll; /* 横スクロール有効 */;
+  scrollbar-color: #224aff transparent; /* スクロールバーの色 (Firefox) */
+  scrollbar-width:thin /* スクロールバーの幅 (Firefox) */
+}
+
+.team-wrapper{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap:0.5%;
+
+  height: 88%;
+  margin-right:min(1vh, calc(1vw * (9 / 16)));
+}
+
+.team{
+  display: flex;
+  flex-direction: row-reverse;
+  align-items:center;
+  justify-content:space-between;
+  gap:min(1vh, calc(1vw * (9 / 16)));
+  
+
+  height:85%;
+  flex-grow: 1;
+}
+
+.team-header,.archer{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content:space-between;
+  gap:0.5%;
+
+  width:   min(10vh, calc(10vw * (9 / 16)));
+  height: 100%;
+}
+
+.arrow-number-wrapper,.archer-score,.team-spacer{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+
+  width:   min(10vh, calc(10vw * (9 / 16)));
+  height: 55%;
+  min-height:55%;
+}
+
+.arrow-number-wrapper,.archer-score{
+  flex-direction: column-reverse;
+}
+
+.square{
+  position: relative;
+  width:   min(10vh, calc(10vw * (9 / 16)));
+  height: min(10vh, calc(10vw * (9 / 16)));
+  background-color: #ffdb77;
+}
+
+.close{
+  width:100%;
+  height: 10%;
+  background-color: #ffdb77;
+
+  /* レイアウト & 配置 */
+  align-content: center;
+  text-align: center;
+  overflow: hidden; /* はみ出しを隠す */
+  
+  font-family: "HG正楷書体-PRO", "HiraMinProN-W6", serif;
+  font-size: min(2vw, calc(2vh * (16 / 9)));
+}
+.slide{
+  width:100%;
+  height: 65%;
+  align-content: center;
+  text-align: center;
+  overflow: hidden; /* はみ出しを隠す */
+  writing-mode: vertical-lr;
+  direction: rtl;
+  background-color: #ffdb77;
+}
+.distance-input{
+  display: inline-block;
+  height: min(28vh, calc(28vw * (9 / 16)));
+}
+.far{
+  width:100%;
+  height: 10%;
+  background-color: #ffdb77;
+  /* レイアウト & 配置 */
+  align-content: center;
+  text-align: center;
+  overflow: hidden; /* はみ出しを隠す */
+  font-family: "HG正楷書体-PRO", "HiraMinProN-W6", serif;
+  font-size: min(2vw, calc(2vh * (16 / 9)));
+}
+.distance-value{
+  width:100%;
+  height: 10%;
+  background-color: #ffdb77;
+  /* レイアウト & 配置 */
+  align-content: center;
+  text-align: center;
+  overflow: hidden; /* はみ出しを隠す */
+  font-family: "HG正楷書体-PRO", "HiraMinProN-W6", serif;
+  font-size: min(2vw, calc(2vh * (16 / 9)));
+}
+
+.team-save{
+  width:100%;
+  height: 8.5%;
+  min-height: 8.5%;
+  background-color: rgb(243, 210, 176);
+}
+.team-name,.archer-name{
+  align-content: center;
+  text-align: center;
+  width:100%;
+  flex-grow:1;
+
+  background-color: rgb(250, 189, 128);
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  font-size: min(2vw, calc(2vh * (16 / 9)));
+  font-family: serif;
+}
+.archer-order{
+  text-align: center;
+  align-content: center;
+  overflow: hidden; /* はみ出しを隠す */
+  width:100%;
+  height: 4%;
+
+  background-color: rgb(250, 189, 128);
+  font-size: min(1.5vw, calc(1.5vh * (16 / 9))); /* 子要素の基準フォントサイズ */
+  position: relative;
+  font-family: "HG正楷書体-PRO", "HiraMinProN-W6", serif;
+}
+.archer-number{
+  align-content: center;
+  overflow: hidden; /* はみ出しを隠す */
+  width:100%;
+  height: 4%;
+
+  background-color: rgb(250, 189, 128);
+  font-size: min(1.5vw, calc(1.5vh * (16 / 9))); /* 子要素の基準フォントサイズ */
+  text-align: center;
+  font-family: "HG正楷書体-PRO", "HiraMinProN-W6", serif;
+}
+
+.archer-hit-count{
+  background-color: rgb(250, 189, 128);
+  width:100%;
+  height: 4%;
+  text-align: center;
+  
+  font-size: min(1.2vw, calc(1.2vh * (16 / 9))); /* 子要素の基準フォントサイズ */
+}
+
+.team-place{
+  background-color: rgb(250, 189, 128);
+  text-align: center;
+  width: 100%;
+  font-size: min(1.5vw, calc(1.5vh * (16 / 9))); /* 子要素の基準フォントサイズ */
+}
+
+.square-button {
+  display: block;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  opacity: 0; /* 透明にして非表示 */
+  border: none; /* ボタンのデフォルトスタイルをリセット */
+  background: none; /* ボタンのデフォルトスタイルをリセット */
+  cursor: pointer; /* クリック可能であることを示す */
+}
+
+/* ===============================================
+  「一」「二」「三」「四」のマス
+   =============================================== */
+.arrow-number{
+  align-content: center;
+  text-align: center;
+  overflow: hidden; /* はみ出しを隠す */
+
+  /* タイポグラフィ */
+  font-family: "HG正楷書体-PRO", "HiraMinProN-W6", serif;
+  font-size: min(5vw, calc(5vh * (16 / 9)));
+}
+
+/* ===============================================
+  スコア操作ボタン
+   =============================================== */
+.score-button{
+  display: block;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  margin: 0;
+  padding: 0;
+  z-index: 100;
+  font-size: min(3.6vw, calc(3.6vh * (16 / 9)));
+  cursor: pointer; /* クリック可能であることを示す */
+}
+
+#hit-button{
+  top: -100%;
+  left: 0%;
+  background-color: pink;
+}
+
+#miss-button{
+  top: 100%;
+  left: 0%;
+  background-color:cyan;
+}
+#uncertain-button{
+  top: 0%;
+  left: -100%;
+  background-color:#ffff80;
+}
+#erase-button{
+  top: 0%;
+  right: -100%;
+  background-color:#a0ffa0;
+}
+
+/* ===============================================
+  スコア状態表示 (背景画像)
+   =============================================== */
+
+/* 共通の背景プロパティ */
+.hit,
+.miss,
+.uncertain {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* 個別の背景画像 */
+.hit {
+  background-image: url('../img/circle.svg');
+}
+
+.miss {
+  background-image: url('../img/cross.svg');
+}
+
+.uncertain {
+  background-image: url('../img/triangle.svg');
+}

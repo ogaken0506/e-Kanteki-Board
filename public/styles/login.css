@@ -1,0 +1,22 @@
+.gsi-material-button {
+  background-image: none;
+  border: 1px solid #74777500;
+  color: #1f1f1f;
+  cursor: pointer;
+  overflow: hidden;
+  padding: 0;
+  position: relative;
+  text-align: center;
+  vertical-align: middle;
+  white-space: nowrap;
+  width: auto;
+  min-width: min-content;
+}
+
+.gsi-material-button:hover {
+  border: 1px solid #747775;
+}
+#google-button-img{
+  width: min(30vh, calc(30vw * (9 / 16)));
+  display:block;
+}

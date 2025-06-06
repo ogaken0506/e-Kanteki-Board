@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" width="384" height="384">
+  <rect x="0" y="0" width="384" height="384" fill="rgb(0,0,0)" />
+  <rect x="176" y="0" width="32" height="384" fill="rgb(255,255,255)" />
+  <rect x="0" y="176" width="384" height="32" fill="rgb(255,255,255)" />
+  <circle cx="88" cy="88" r="68" fill="none" stroke-width="35" stroke="rgb(0,0,0)" />
+  <circle cx="88" cy="88" r="68" fill="none" stroke-width="30" stroke="rgb(255,255,255)" />
+  <circle cx="296" cy="296" r="68" fill="none" stroke-width="35" stroke="rgb(0,0,0)" />
+  <circle cx="296" cy="296" r="68" fill="none" stroke-width="30" stroke="rgb(255,255,255)" />
+  <line x1="364" y1="20" x2="228" y2="156" stroke-width="35" stroke="rgb(0,0,0)" />
+  <line x1="228" y1="20" x2="364" y2="156" stroke-width="35" stroke="rgb(0,0,0)" />
+  <line x1="229" y1="21" x2="363" y2="155" stroke-width="31" stroke="rgb(255,255,255)" />
+  <line x1="156" y1="228" x2="20" y2="364" stroke-width="35" stroke="rgb(0,0,0)" />
+  <line x1="20" y1="228" x2="156" y2="364" stroke-width="35" stroke="rgb(0,0,0)" />
+  <line x1="21" y1="229" x2="155" y2="363" stroke-width="31" stroke="rgb(255,255,255)" />
+  <line x1="155" y1="229" x2="21" y2="363" stroke-width="31" stroke="rgb(255,255,255)" />
+  <line x1="363" y1="21" x2="229" y2="155" stroke-width="31" stroke="rgb(255,255,255)" />
+  <rect x="0" y="0" width="384" height="384" fill="none" stroke-width="3" stroke="rgb(255,255,255)" />
+</svg>

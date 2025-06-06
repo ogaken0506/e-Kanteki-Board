@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <title>電子看的板</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+    <link rel="icon alternate" href="favicon.ico" type="image/x-icon" sizes="48x48">
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" sizes="any">
+    <link rel="apple-touch-icon" sizes="512x512" href="img/512.png">
+    <link rel="manifest" href="manifest.webmanifest" type="application/manifest+json" crossorigin="use-credentials">
+    <link href="styles/index.css" rel="stylesheet" type="text/css">
+    <link href="styles/sidebar.css" rel="stylesheet" type="text/css">
+    <link href="styles/scoreboard.css" rel="stylesheet" type="text/css">
+    <link href="styles/login.css" rel="stylesheet" type="text/css">
+    <script src="https://apis.google.com/js/api.js"></script>
+    <script src="https://accounts.google.com/gsi/client"></script>
+    <script src="bundle.js" defer></script>
+    <script defer>
+      if('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/scoreboard/serviceWorker.js', { scope: '/scoreboard/' });
+      }
+    </script>
+  </head>
+  <body>
+    <div id="cover">
+      <div id="input-form">
+        <label>
+          試合情報ファイル(json/json5)
+          <input class="first-file-input" id="info-file" type="file" accept=".json,.jsonc,.json5" style="border: 1px solid #000;">
+        </label>
+        <br>
+        <button id="g_id_signin" class="gsi-material-button">
+          <img id='google-button-img' src="img/web_light_sq_SI.svg" alt="Google login">
+        </button><label id="signin-label" for="g_id_signin"></label>
+        <span id="why-google-login">Why Google Login?<span id="why-google-login-hover">googleアカウントでログインすることで、自分のスプレッドシートや、編集できる形で共有されたスプレッドシートから選手の情報を読み取り、的中結果を記録することができます。</span></span><br>
+        <button id="close-form">閉じる</button><br>
+        <hr style="width:95%">
+        <p style="margin:min(1vh, calc(1vw * (9 / 16)));"><a href="#">説明書</a> / <a href="#">使い方</a> </p>
+        <p style="margin-top:min(1vh, calc(1vw * (9 / 16)));"><a href="#">情報ファイル生成ツール</a></p>
+        <a href="#">サンプルファイル</a>
+        <a href="https://ko-wgaca.f5.si/policy_and_disclaimer.html">Privacy policy & Disclaimer</a>
+      </div>
+    </div>
+    <div id="wrapper">
+      <div id="sidebar" style="background-color: white;">
+        <div id="category-wrapper">
+        </div>
+        <div id="sidebar-content">
+          <div id="round-wrapper" class="select-wrapper">
+            <label class="match-select-label" for="round-select">段階</label>
+            <select class="match-select"       id="round-select"></select>
+          </div>
+          <div style="width:100%;height:1px;background-color: black;"></div>
+          <div id="team-selects-wrapper" class="selects-wrapper">
+            <div id="team-wrapper"  class="select-wrapper team-select-wrapper">
+              <label  class="match-select-label" for="team-select" id="team-select-label">組</label>
+              <select class="match-select"        id="team-select"></select>
+            </div>
+          </div>
+          <div style="width:100%;height:1px;background-color: black;"></div>
+          <div id="group-wrapper" class="select-wrapper">
+            <label  class="match-select-label" for="group-select">群</label>
+            <select class="match-select"        id="group-select" disabled>
+            </select>
+          </div>
+          <div id="shajo-wrapper" class="select-wrapper">
+            <label  class="match-select-label" for="shajo-select">射場</label>
+            <select class="match-select"        id="shajo-select" disabled></select>
+          </div>
+        </div>
+        <div id="sidebar-common-content">
+          <div class="button-wrapper">
+            <label for="selection-mode"></label>
+            <button class="sidebar-common-button" id="selection-mode">[群,射場]で[組]を指定する</button>
+          </div>
+
+          <div class="button-wrapper">
+            <label for="prev"></label>
+            <button class="sidebar-common-button" id="prev">前の立へ</button>
+
+            <label for="next"></label>
+            <button class="sidebar-common-button" id="next">次の立へ</button>
+          </div>
+
+          <div class="button-wrapper">
+            <label for="undo"></label>
+            <button class="sidebar-common-button" id="undo">取り消す</button>
+
+            <label for="redo"></label>
+            <button class="sidebar-common-button" id="redo">やり直す</button>
+          </div>
+
+          <div class="button-wrapper">
+            <label for="register"></label>
+            <button class="sidebar-common-button" id="register">登録</button>
+          </div>
+        </div>
+      </div>
+      <div id="scoreboard">
+      </div>
+    </div>
+
+<!--TEMPLATES-->
+    <template id="first-team-header-template">
+      <div class="team-header" id="TH1">
+        <div class="arrow-number-wrapper">
+          <div class="square arrow-number">一</div>
+          <div class="square arrow-number">二</div>
+          <div class="square arrow-number">三</div>
+          <div class="square arrow-number">四</div>
+        </div>
+        <div class="team-save"></div>
+        <div class="team-name"></div>
+      </div>
+    </template>
+
+    <template id="team-header-template">
+      <div class="team-header" id="TH[n]">
+        <div class="team-spacer"></div>
+        <div class="team-save"></div>
+        <div class="team-name"></div>
+      </div>
+    </template>
+
+    <template id="archer-normal-template">
+      <div class="archer" id="A[n]">
+        <div class="archer-score">
+          <div id="S1" class="square"><button id="B1" class="square-button"></button></div>
+          <div id="S2" class="square"><button id="B2" class="square-button"></button></div>
+          <div id="S3" class="square"><button id="B3" class="square-button"></button></div>
+          <div id="S4" class="square"><button id="B4" class="square-button"></button></div>
+        </div>
+        <div class="archer-order"></div>
+        <div class="archer-number">0</div>
+        <div class="archer-name"></div>
+        <div class="archer-hit-count">0</div>
+      </div>
+    </template>
+
+    <template id="archer-distance-template">
+      <div class="archer" id="A[n]">
+        <div class="archer-score">
+          <div id="DS1" class="distance-value">100</div>
+          <div id="DS2" class="far">遠</div>
+          <div id="DS3" class="slide">
+            <input class="distance-input" type="range" min="0" max="100" value="0" step="1" />
+          </div>
+          <div id="DS4" class="close">近</div>
+        </div>
+        <div class="archer-number">0</div>
+        <div class="archer-name"></div>
+      </div>
+    </template>
+
+    <template id="team-select-template">
+      <div id="TSW[n]"  class="select-wrapper team-select-wrapper">
+        <label  class="match-select-label"      for="TS[n]" id="TSL[n]"></label>
+        <select class="match-select team-select" id="TS[n]"></select>
+      </div>
+    </template>
+
+  </body>
+</html>

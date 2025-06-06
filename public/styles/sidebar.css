@@ -1,0 +1,183 @@
+/* ===============================================
+  サイドバー全体 (#sidebar)
+  =============================================== */
+#sidebar {
+  /* レイアウト (Grid) */
+  display: grid;
+  grid-template-rows: 1fr 4.5fr 4.5fr; /* 行: カテゴリ, 個別設定, 共通設定 */
+
+  /* ボックスモデル */
+  width: min(36vw, calc(36svh * (16 / 9))); /* レスポンシブな幅 */
+}
+
+/* ===============================================
+    ラジオボタン (非表示)
+    =============================================== */
+input[type='radio'] {
+  display: none; /* ラベルで操作するため非表示 */
+}
+
+/* ===============================================
+    サイドバー個別設定エリア (#sidebar-content)
+    =============================================== */
+#sidebar-content {
+  /* グリッド配置 */
+  grid-row: 2 / 3;    /* 2行目 */
+
+  /* レイアウト (Grid) */
+  display: flex;
+  flex-direction: column; /* 縦方向配置 */
+  align-items: center; /* 水平中央揃え */
+  justify-content: space-around;
+  /*grid-template-rows: repeat(4, 1fr); /* 4行均等分割 */
+
+  /* ボックスモデル */
+  padding: 0;
+  margin: 0;
+
+  /* タイポグラフィ */
+  text-align: center;
+  font-size: min(2.5vw, calc(2.5svh * (16 / 9)));
+
+  /* 外観 */
+  background-color: white;
+}
+
+/* ===============================================
+    サイドバー共通設定エリア (#sidebar-common-content)
+    =============================================== */
+#sidebar-common-content {
+  /* グリッド配置 */
+  grid-row: 3 / 4;    /* 3行目 */
+
+  /* レイアウト (Grid) */
+  display: grid;
+  grid-template-rows: repeat(4, 1fr); /* 4行均等分割 */
+
+  /* ボックスモデル */
+  padding: 0;
+  margin: 0;
+
+  /* タイポグラフィ */
+  text-align: center;
+  font-size: min(2.5vw, calc(2.5svh * (16 / 9)));
+
+  /* 外観 */
+  background-color: aquamarine;
+}
+
+/* ===============================================
+    ボタン/セレクト要素のラッパー (共通)
+    =============================================== */
+.button-wrapper,
+.select-wrapper,
+.selects-wrapper {
+  /* レイアウト (Flexbox) */
+  width:100%;
+  display: flex;
+  align-items: center; /* 垂直中央揃え */
+  justify-content: center; /* 水平中央揃え */
+}
+
+.selects-wrapper{
+  flex-direction: column;
+  justify-content: start; /* 水平中央揃え */
+  height:3.6em;
+  overflow-y:scroll;
+  scrollbar-width:thin /* スクロールバーの幅 (Firefox) */
+}
+
+.team-select-wrapper{
+  margin-bottom:min(0.5vh, calc(0.5vw * (9 / 16)));
+}
+
+/* ===============================================
+  サイドバー内の共通ボタン (.sidebar-common-button)
+  =============================================== */
+.sidebar-common-button {
+  /* 表示形式 */
+  display: inline-block;
+
+  /* ボックスモデル */
+  min-width: 7em; /* 最小幅 */
+  height: min(4vw, calc(4svh * (16 / 9))); /* レスポンシブな高さ */
+  margin-left: min(1vw, calc(1svh * (16 / 9)));
+  margin-right: min(1vw, calc(1svh * (16 / 9)));
+
+  /* タイポグラフィ */
+  font-size: min(2vw, calc(2svh * (16 / 9)));
+}
+
+/* ===============================================
+    カテゴリ選択エリア (#category-wrapper)
+    =============================================== */
+#category-wrapper {
+  /* グリッド配置 */
+  grid-row: 1 / 2;    /* 1行目 */
+
+  /* レイアウト (Flexbox) */
+  display: flex;
+  align-items: center; /* 垂直中央揃え */
+  flex-direction: row; /* 横方向配置 */
+
+  /* ボックスモデル */
+  min-width: min(36vw, calc(36svh * (16 / 9))); /* 親要素に合わせる */
+  overflow-x: scroll; /* 横スクロール有効 */
+  scrollbar-color: #224aff transparent; /* スクロールバーの色 (Firefox) */
+  scrollbar-width: thin; /* スクロールバーの幅 (Firefox) */
+  /* Webkit系ブラウザ用スクロールバーは別途 ::-webkit-scrollbar で指定 */
+
+  /* 外観 */
+  background-color: rgb(200, 255, 255);
+}
+
+/* ===============================================
+  カテゴリ選択ラベル (.category-label)
+  =============================================== */
+.category-label {
+  /* ボックスモデル */
+  margin:0;
+  margin-left: min(0.7vw, calc(0.7svh * (16 / 9)));
+  margin-right: min(0.7vw, calc(0.7svh * (16 / 9)));
+  padding: min(0.1vw, calc(0.1svh * (16 / 9)));
+  border: 2px solid #999;
+
+  /* タイポグラフィ */
+  font-size: min(1.8vw, calc(1.8svh * (16 / 9)));
+  white-space: nowrap; /* 改行禁止 */
+  cursor: pointer; /* クリック可能であることを示す */
+}
+
+/* ===============================================
+    選択中のカテゴリラベル
+    =============================================== */
+.category-label:has(input:checked) {
+  border: 2px solid #ff0000; /* 選択中の枠線を赤に */
+}
+
+/* ===============================================
+    試合選択ラベル (.match-select-label)
+    =============================================== */
+.match-select-label {
+  /* 表示形式 */
+  display: inline-block;
+
+  /* ボックスモデル */
+  width: 2.5em;
+}
+
+/* ===============================================
+    試合選択セレクトボックス (.match-select)
+    =============================================== */
+.match-select {
+  /* 表示形式 */
+  display: inline-block;
+
+  /* ボックスモデル */
+  width: 12em;
+  height:min(4vw, calc(4svh * (16 / 9)));
+  margin-left: 0.5em;
+
+  /* タイポグラフィ */
+  font-size: min(2vw, calc(2svh * (16 / 9)));
+}
