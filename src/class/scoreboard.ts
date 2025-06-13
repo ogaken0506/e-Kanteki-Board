@@ -41,7 +41,7 @@ export class Scoreboard {
       archers:Array.from({ length: teamSize }, () => ({ name: "", number: 0, score: ["#","#","#","#"] , distance: 0}))
     }));
     this.round = "";
-    this.group = 0;
+    this.group = -1;
     this.shajo = 0;
     this.method = MatchMethod.Normal;
   }
