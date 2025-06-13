@@ -42,8 +42,8 @@ document.getElementById('info-file')!.addEventListener('change', function(e){
         if(info.setInfo(JSON.stringify(json))){
           isValidInfoFile = true;
         }
-        console.log("loadedInfo  ",info.categories);
-        console.log("loadedInfo  ",info.venue);
+        console.log("loaded Categories  ",info.categories);
+        console.log("loaded Venue  ",     info.venue);
       }catch(e){
         console.log(e);
       }
