@@ -1,6 +1,6 @@
 import * as esbuild from 'esbuild'
 import fs from 'fs';
-const config = JSON.parse(fs.readFileSync('./production.json', 'utf-8'));
+const config = JSON.parse(fs.readFileSync('./development.json', 'utf-8'));
 
 let ctx = await esbuild.context({
   entryPoints: ['./src/index.js'],
