@@ -50,7 +50,9 @@
 
         width:   min(11vh, calc(11vw * (9 / 16)));
         height: 100%;
-        & .arrow-number-wrapper,.archer-score,.team-spacer{
+        & .arrow-number-wrapper,
+        & .archer-score,
+        & .team-spacer{
           display: flex;
           flex-direction: column;
           align-items: center;
@@ -164,8 +166,8 @@
           background-color: #ffdb77;
         }
         & .hit,
-        .miss,
-        .uncertain {
+        & .miss,
+        & .uncertain {
           background-size: cover;
           background-position: center;
           background-repeat: no-repeat;
@@ -188,7 +190,8 @@
           min-height: 8.5%;
           background-color: rgb(243, 210, 176);
         }
-        & .team-name,.archer-name{
+        & .team-name,
+        & .archer-name{
           align-content: center;
           text-align: center;
           width:100%;
@@ -200,47 +203,26 @@
           font-size: min(2vw, calc(2vh * (16 / 9)));
           font-family: serif;
         }
-        & .archer-order{
-          text-align: center;
-          align-content: center;
-          overflow: hidden; /* はみ出しを隠す */
-          width:100%;
-          height: 4%;
-
-          background-color: rgb(250, 189, 128);
-          font-size: min(1.5vw, calc(1.5vh * (16 / 9))); /* 子要素の基準フォントサイズ */
-          position: relative;
-          font-family: "HG正楷書体-PRO", "HiraMinProN-W6", serif;
-        }
-        & .archer-number{
-          align-content: center;
-          overflow: hidden; /* はみ出しを隠す */
-          width:100%;
-          height: 4%;
-
-          background-color: rgb(250, 189, 128);
-          font-size: min(1.5vw, calc(1.5vh * (16 / 9))); /* 子要素の基準フォントサイズ */
-          text-align: center;
-          font-family: "HG正楷書体-PRO", "HiraMinProN-W6", serif;
-        }
-
+        & .archer-order,
+        & .archer-number,
         & .archer-hit-count{
           background-color: rgb(250, 189, 128);
           width:100%;
           height: 4%;
           text-align: center;
           align-content: center;
+
           overflow: hidden; /* はみ出しを隠す */
-          
-          font-size: min(1.5vw, calc(1.5vh * (16 / 9))); /* 子要素の基準フォントサイズ */
+
+          font-size: min(1.5vw, calc(1.5vh * (16 / 9)));
           font-family: "HG正楷書体-PRO", "HiraMinProN-W6", serif;
         }
       }
     }
     & .team-place{
       background-color: rgb(250, 189, 128);
-      text-align: center;
       width: 100%;
+      text-align: center;
       font-size: min(1.5vw, calc(1.5vh * (16 / 9))); /* 子要素の基準フォントサイズ */
     }
   }
