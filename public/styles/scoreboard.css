@@ -85,23 +85,23 @@
             background: none; /* ボタンのデフォルトスタイルをリセット */
             cursor: pointer; /* クリック可能であることを示す */
           }
-          #hit-button{
+          & #hit-button{
             top: -100%;
             left: 0%;
             background-color: pink;
           }
 
-          #miss-button{
+          & #miss-button{
             top: 100%;
             left: 0%;
             background-color:cyan;
           }
-          #uncertain-button{
+          & #uncertain-button{
             top: 0%;
             left: -100%;
             background-color:#ffff80;
           }
-          #erase-button{
+          & #erase-button{
             top: 0%;
             right: -100%;
             background-color:#a0ffa0;
@@ -163,22 +163,22 @@
           aspect-ratio: 1;
           background-color: #ffdb77;
         }
-        .hit,
+        & .hit,
         .miss,
         .uncertain {
           background-size: cover;
           background-position: center;
           background-repeat: no-repeat;
         }
-        .hit {
+        & .hit {
           background-image: url('../img/circle.svg');
         }
 
-        .miss {
+        & .miss {
           background-image: url('../img/cross.svg');
         }
 
-        .uncertain {
+        & .uncertain {
           background-image: url('../img/triangle.svg');
         }
 
