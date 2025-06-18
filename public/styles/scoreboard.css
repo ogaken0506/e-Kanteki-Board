@@ -88,6 +88,17 @@
             background: none; /* ボタンのデフォルトスタイルをリセット */
             cursor: pointer; /* クリック可能であることを示す */
           }
+          & .score-button{
+            display: block;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            margin: 0;
+            padding: 0;
+            z-index: 100;
+            font-size: min(3.6vw, calc(3.6vh * (16 / 9)));
+            cursor: pointer; /* クリック可能であることを示す */
+          }
           & #hit-button{
             top: -100%;
             left: 0%;
