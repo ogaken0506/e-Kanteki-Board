@@ -1,25 +1,59 @@
-import info from '../class/info';
-
 import DOMPurify from 'dompurify';
 
-
-export function updateRoundOptions(categoryIndex:number) {
-  const roundSelectElem  = document.getElementById('round-select' ) as HTMLSelectElement;
-  roundSelectElem.innerHTML = "";
-  if(!info.categories[categoryIndex]){
-    console.warn('invalid index (categoryIndex:'+categoryIndex+')')
-    console.log(info.categories);
+export function addCategoryOption(nameStr:string, color:string, id:string){
+  const categoryWrapper = document.getElementById('category-wrapper');
+  if(!categoryWrapper){
+    console.warn('categoryWrapper not found');
     return;
   }
-  let rounds = info.categories[categoryIndex].rounds;
-  rounds.forEach((round, index) => {
-    const opt = document.createElement('option');
-    opt.textContent = DOMPurify.sanitize(round.name);
-    opt.setAttribute("value", DOMPurify.sanitize(round.short_name));
-    opt.dataset.method = DOMPurify.sanitize(round.method);
-    roundSelectElem.appendChild(opt);
-  })
-  roundSelectElem.selectedIndex = -1;
+  let label = document.createElement('label');
+  let input = document.createElement('input');
+  let nameElem = document.createElement('span');
+
+  label.classList.add('category-label');
+  label.style.backgroundColor = DOMPurify.sanitize(color);
+
+  input.classList.add('category-input')
+  input.setAttribute('type', 'radio');
+  input.setAttribute('name', 'category');
+  input.setAttribute('value', DOMPurify.sanitize(id));
+
+  nameElem.textContent = DOMPurify.sanitize(nameStr);
+
+  label.appendChild(input);
+  label.appendChild(nameElem);
+  categoryWrapper.appendChild(label)
+}
+
+export function clearCategoryOptions(){
+  const categoryWrapper = document.getElementById('category-wrapper');
+  if(!categoryWrapper){
+    console.warn('categoryWrapper not found');
+    return;
+  }
+  categoryWrapper.innerHTML = "";
+}
+
+export function addRoundOption(name:string, shortName:string, method:string){
+  const roundSelectElem  = document.getElementById('round-select' ) as HTMLSelectElement;
+  if(!roundSelectElem){
+    console.warn('roundSelectElem not found');
+    return;
+  }
+  const opt = document.createElement('option');
+  opt.textContent = DOMPurify.sanitize(name);
+  opt.setAttribute("value", DOMPurify.sanitize(shortName));
+  opt.dataset.method = DOMPurify.sanitize(method);
+  roundSelectElem.appendChild(opt);
+}
+
+export function clearRoundOptions(){
+  const roundSelectElem  = document.getElementById('round-select' ) as HTMLSelectElement;
+  if(!roundSelectElem){
+    console.warn('roundSelectElem not found');
+    return;
+  }
+  roundSelectElem.innerHTML = "";
 }
 
 export function updateTeamOptions(teamCount:number, teamList:string[], handler?: (this:HTMLSelectElement, e:Event) => any) {

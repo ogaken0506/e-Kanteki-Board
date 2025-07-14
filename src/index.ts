@@ -68,19 +68,7 @@ async function applyInfo(){
   changeCommunicationState(1);
   //categoryを追加
   for(let i=0; i<info.categories.length; i++){
-    let label = document.createElement('label');
-    let input = document.createElement('input');
-    let name = document.createElement('span');
-    label.classList.add('category-label');
-    label.style.backgroundColor = DOMPurify.sanitize(info.categories[i].background_color);
-    input.classList.add('category-input')
-    input.setAttribute('type', 'radio');
-    input.setAttribute('name', 'category');
-    input.setAttribute('value', i.toString());
-    name.textContent = DOMPurify.sanitize(info.categories[i].name);
-    label.appendChild(input);
-    label.appendChild(name);
-    document.getElementById('category-wrapper')!.appendChild(label)
+    Opt.addCategoryOption(info.categories[i].name, info.categories[i].background_color, i.toString());
   }
   //scoreboardを生成、初期化
   scoreboards.length = 0;
@@ -93,12 +81,11 @@ async function applyInfo(){
     }
   }
 
-  //categoryのclickイベント
+  //categoryのclickイベント登録
   let categoryButtons = document.getElementsByClassName('category-input');
   for(let i=0; i<categoryButtons.length; i++){
     categoryButtons[i].addEventListener('click', onCategoryClick)
   }
-  //categoryのclickイベントここまで
 
   //射場の選択肢生成
   Opt.updateShajoOptions(info.venue.shajo_count);

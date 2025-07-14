@@ -33,7 +33,12 @@ export async function onCategoryClick(e:Event){
   let PromiseTeamList:Promise<string[]> = Comm.getTeamList(currentSB.sheetId, currentSB.round);
 
   //roundの選択肢削除&生成
-  Opt.updateRoundOptions(selectedIndex)
+  Opt.clearRoundOptions();
+  let rounds = info.categories[selectedIndex].rounds;
+  for(let i=0; i<rounds.length; i++){
+    Opt.addRoundOption(rounds[i].name, rounds[i].short_name, rounds[i].method)
+  }
+  roundSelectElem.selectedIndex = -1;
 
   //teamの選択肢削除&生成
   let teamList = await PromiseTeamList;
