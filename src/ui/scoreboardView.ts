@@ -1,7 +1,6 @@
 import { Scoreboard } from "../class/scoreboard";
 import * as GetElems from './getElems'
 
-
 let archerElements = document.getElementsByClassName("archer");
 
 export function applyScore(arg:Scoreboard) {

@@ -1,6 +1,7 @@
 import {
   scoreboards,
   currentSB,
+  setCurrentScoreboard,
   isCommunicating,
   changeCommunicationState,
   isDirectTeamChoice,
@@ -9,7 +10,6 @@ import {
 import * as GetElems from './getElems';
 import * as Comm     from '../network/communication';
 import info   from '../class/info';
-import { setCurrentScoreboard } from '../state';
 import { generateScoreboardElements, generateTeamSelectElem } from './generate';
 import * as Opt from './selectOptions';
 import { applyScoreboardData, clearScoreboard } from './scoreboardView';

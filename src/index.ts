@@ -4,12 +4,18 @@ import {
   changeCommunicationState
 } from './state'
 
-import { Scoreboard, MatchType }                              from './class/scoreboard';
-import info from './class/info';
-import { generateScoreboardElements, generateTeamSelectElem } from './ui/generate';
-import * as Opt                                               from './ui/selectOptions';
-import { getLoginStatus }                                     from './network/api';
+import { 
+  Scoreboard,
+  MatchType } from './class/scoreboard';
+import info   from './class/info';
 
+import { getLoginStatus } from './network/api';
+
+import { 
+  generateScoreboardElements, 
+  generateTeamSelectElem } 
+  from './ui/generate';
+import * as Opt from './ui/selectOptions';
 import {
   onSelectionModeClick,
   onRegisterClick,
@@ -19,7 +25,6 @@ import {
   sidebarChangeEventHandler
 } from './ui/sidebarEvent';
 
-import DOMPurify from 'dompurify';
 import JSON5 from 'json5'
 
 let isValidInfoFile = false;
