@@ -1,7 +1,8 @@
 import { Scoreboard, MatchType } from "./class/scoreboard";
 
-export let scoreboards:Scoreboard[] = [];
-export let currentSB:Scoreboard = new Scoreboard("", MatchType.Team, 6, 1);
+let scoreboards:Scoreboard[] = [];
+let savedScoreboards:Scoreboard[] = [];
+let currentIndex = 0;
 export let communicationCount = 0;
 export let isCommunicating    = false;
 export let isDirectTeamChoice = true;
@@ -11,8 +12,25 @@ const teamSelectElems = document.getElementsByClassName('team-select');
 const groupSelectElem  = document.getElementById('group-select' ) as HTMLSelectElement;
 const shajoSelectElem  = document.getElementById('shajo-select' ) as HTMLSelectElement;
 
-export function setCurrentScoreboard(arg:Scoreboard){
-  currentSB = arg;
+export function setCurrentIndex(arg:number){
+  currentIndex = arg;
+}
+
+export function addScoreboard(sheet_id:string, matchType:MatchType, team_size:number, team_count:number){
+  scoreboards.push(new Scoreboard(sheet_id, matchType, team_size, team_count));
+  savedScoreboards.push(new Scoreboard(sheet_id, matchType, team_size, team_count))
+}
+
+export function clearScoreboards(){
+  scoreboards.length = 0;
+  savedScoreboards.length = 0;
+}
+
+export function getCurrentScoreboard(){
+  return scoreboards[currentIndex];
+}
+export function getCurrentSavedScoreboard(){
+  return savedScoreboards[currentIndex];
 }
 
 export function changeCommunicationState(arg:number){
@@ -45,7 +63,7 @@ function enableSidebar(){
   for(let i=0; i<commonButtons.length; i++){
     commonButtons[i].removeAttribute('disabled');
   }
-  if(currentSB.method == "distance"){
+  if(scoreboards[currentIndex].method == "distance"){
     groupSelectElem.setAttribute('disabled', 'true');
     shajoSelectElem.setAttribute('disabled', 'true');
     for(let i=0; i<teamSelectElems.length; i++){

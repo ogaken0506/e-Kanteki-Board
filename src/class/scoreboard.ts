@@ -122,6 +122,18 @@ export class Scoreboard {
     }
   }
 
+  loadScoreboard(other:Scoreboard){
+    this.sheetId = other.sheetId;
+    this.matchType = other.matchType;
+    this.round = other.round;
+    this.group = other.group;
+    this.shajo = other.shajo;
+    this.method = other.method;
+    this.teamCount = other.teamCount;
+    this.teamSize = other.teamSize;
+    this.teams = structuredClone(other.teams);
+  }
+
   getArcherData(indexOrName?:number|string, start?:number, end?:number):string{
     let dataStr = "";
     if(indexOrName == undefined){
@@ -325,5 +337,88 @@ export class Scoreboard {
       }
     }
     return index;
+  }
+
+  async compare(other:Scoreboard):Promise<string[]>{
+    let misMatch:string[] = [];
+    //基本情報比較
+    if(this.sheetId != other.sheetId){
+      misMatch.push("sheetId");
+    }
+    if(this.matchType != other.matchType){
+      misMatch.push("matchType");
+    }
+    if(this.round != other.round){
+      misMatch.push("round");
+    }
+    if(this.group != other.group){
+      misMatch.push("group");
+    }
+    if(this.shajo != other.shajo){
+      misMatch.push("shajo");
+    }
+    if(this.method != other.method){
+      misMatch.push("method");
+    }
+    if(this.teamCount != other.teamCount){
+      misMatch.push("teamCount");
+    }
+    if(this.teamSize != other.teamSize){
+      misMatch.push("teamSize");
+    }
+
+    //要素数比較
+    if(this.teams.length != other.teams.length){
+      misMatch.push("teams_length");
+      return misMatch;
+    }
+    for(let i = 0; i < this.teams.length; i++){
+      if(this.teams[i].archers.length != other.teams[i].archers.length){
+        misMatch.push("T"+i.toString()+"_archersLength");
+      }
+    }
+    if(misMatch.length != 0) return misMatch;
+
+    //内容比較
+    for(let i = 0; i < this.teams.length; i++){
+      if(this.teams[i].name != other.teams[i].name){
+        misMatch.push("T"+i.toString()+"_name");
+      }
+      for(let j = 0; j < this.teams[i].archers.length; j++){
+        if(this.teams[i].archers[j].name != other.teams[i].archers[j].name){
+          misMatch.push("T"+i.toString()+"-A"+j.toString()+"_name");
+        }
+        if(this.teams[i].archers[j].number != other.teams[i].archers[j].number){
+          misMatch.push("T"+i.toString()+"-A"+j.toString()+"_number");
+        }
+        for(let k = 0; k < 4; k++){
+          if(this.teams[i].archers[j].score[k] != other.teams[i].archers[j].score[k]){
+            misMatch.push("T"+i.toString()+"-A"+j.toString()+"_S"+k.toString());
+          }
+        }
+        if(this.teams[i].archers[j].distance != other.teams[i].archers[j].distance){
+          misMatch.push("T"+i.toString()+"-A"+j.toString()+"_distance");
+        }
+      }
+    }
+    return misMatch;
+  }
+
+  async copy():Promise<Scoreboard>{
+    let newSB = new Scoreboard(this.sheetId, this.matchType, this.teamSize, this.teamCount);
+    newSB.round = this.round;
+    newSB.group = this.group;
+    newSB.shajo = this.shajo;
+    newSB.method = this.method;
+    for(let i = 0; i < this.teams.length; i++){
+      newSB.teams[i].name = this.teams[i].name;
+      for(let j = 0; j < this.teamSize; j++){
+        newSB.teams[i].archers[j].name = this.teams[i].archers[j].name;
+        newSB.teams[i].archers[j].number = this.teams[i].archers[j].number;
+        newSB.teams[i].archers[j].score = this.teams[i].archers[j].score.slice();
+        newSB.teams[i].archers[j].distance = this.teams[i].archers[j].distance;
+      }
+    }
+    return newSB;
   }
 }

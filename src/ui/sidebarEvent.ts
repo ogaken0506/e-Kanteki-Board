@@ -1,7 +1,7 @@
 import {
-  scoreboards,
-  currentSB,
-  setCurrentScoreboard,
+  getCurrentScoreboard,
+  getCurrentSavedScoreboard,
+  setCurrentIndex,
   isCommunicating,
   changeCommunicationState,
   isDirectTeamChoice,
@@ -25,7 +25,8 @@ export async function onCategoryClick(e:Event){
   const target = e.target as HTMLInputElement;
   const selectedIndex:number = Number(target.value);
 
-  setCurrentScoreboard(scoreboards[selectedIndex]);
+  setCurrentIndex(selectedIndex);
+  let currentSB = getCurrentScoreboard();
   generateTeamSelectElem(currentSB.teams.length);
 
   changeCommunicationState(1);
@@ -93,7 +94,35 @@ export async function onCategoryClick(e:Event){
 export async function sidebarChangeEventHandler(e:Event){
   const target = e.target as HTMLSelectElement;
   if (!target) return;
+  let currentSB = getCurrentScoreboard();
+  let savedSB = getCurrentSavedScoreboard();
+  let misMatch = await currentSB.compare(savedSB);
 
+  //未保存の記録がある場合は選択肢を元に戻す
+  if(0 < misMatch.length){
+    alert("未保存の記録があります\n"+misMatch.toString());
+    if(target.id == "round-select"){
+      for(let i=0; i<target.options.length; i++){
+        if(target.options[i].value == currentSB.round){
+          target.selectedIndex = i;
+          break;
+        }
+      }
+    }else if(target.id.match(/^TS[0-9]+$/)){
+      let teamNum = parseInt(target.id.replace(/^TS/, ""));
+      for(let i=0; i<target.options.length; i++){
+        if(target.options[i].value == currentSB.teams[teamNum-1].name){
+          target.selectedIndex = i;
+          break;
+        }
+      }
+    }else if(target.id == "group-select"){
+      groupSelectElem.selectedIndex = currentSB.group;
+    }else if(target.id == "shajo-select"){
+      shajoSelectElem.selectedIndex = currentSB.shajo;
+    }
+    return;
+  }
 
   //スコアボードを初期化
   clearScoreboard(currentSB);
@@ -181,6 +210,7 @@ export async function sidebarChangeEventHandler(e:Event){
   changeCommunicationState(1);
   await Comm.getScore(currentSB);
   applyScoreboardData(currentSB);
+  savedSB.loadScoreboard(currentSB);
   changeCommunicationState(-1);
 }
 
@@ -204,14 +234,22 @@ export function onPrevClick(e:Event){
 
 export async function onRegisterClick(e:Event){
   if(isCommunicating)return;
+  let currentSB = getCurrentScoreboard();
+  let savedSB = getCurrentSavedScoreboard();
   changeCommunicationState(1);
   await Comm.registerScore(currentSB);
-  if(await Comm.verifyUpdate(currentSB)) registerButton.textContent = "成功";
-  else registerButton.textContent = "失敗";
+  if(await Comm.verifyUpdate(currentSB)) {
+    registerButton.textContent = "成功";
+    savedSB.loadScoreboard(currentSB);
+  }else{
+    registerButton.textContent = "失敗";
+
+  }
   changeCommunicationState(-1);
 }
 
 export function onSelectionModeClick(e?:Event){
+  let currentSB = getCurrentScoreboard();
   if(isDirectTeamChoice){//[組]→[群,射場]
     setSelectionMode(false);
     for(let i=0; i<currentSB.teams.length; i++){

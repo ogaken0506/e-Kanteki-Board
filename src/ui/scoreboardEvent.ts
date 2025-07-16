@@ -1,4 +1,4 @@
-import { currentSB } from "../state";
+import { getCurrentScoreboard } from "../state";
 import * as GetElems from './getElems';
 
 export function onSquareClick(e:Event){
@@ -30,6 +30,8 @@ export function onSquareClick(e:Event){
 }
 
 function onScoreButtonClick(e:Event){
+  let currentSB = getCurrentScoreboard();
+
   const scoreButton = e.target as HTMLElement;
   const square = scoreButton.parentElement as HTMLElement;
 
@@ -81,6 +83,7 @@ function onScoreButtonClick(e:Event){
 }
 
 export function onDistanceInput(e:Event){
+  let currentSB = getCurrentScoreboard();
   const target = e.target as HTMLInputElement;
   const teamElem = target.closest('.team') as HTMLElement;
   const archerElem = target.closest('.archer') as HTMLElement;

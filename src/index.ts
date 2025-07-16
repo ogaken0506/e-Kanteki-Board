@@ -1,7 +1,7 @@
 import {
-  scoreboards,
-  currentSB,
-  changeCommunicationState
+  addScoreboard,
+  changeCommunicationState,
+  clearScoreboards,
 } from './state'
 
 import { 
@@ -32,7 +32,7 @@ let isValidInfoFile = false;
 const selectionModeButton = document.getElementById('selection-mode') as HTMLButtonElement;
 const registerButton   = document.getElementById('register') as HTMLButtonElement;
 
-generateScoreboardElements(currentSB);
+generateScoreboardElements(new Scoreboard("", MatchType.Team, 6, 1));
 generateTeamSelectElem(1)
 
 // GoogleログインとシートIDと試合の情報のjson(json5)を要求(構造でチェック)
@@ -76,13 +76,12 @@ async function applyInfo(){
     Opt.addCategoryOption(info.categories[i].name, info.categories[i].background_color, i.toString());
   }
   //scoreboardを生成、初期化
-  scoreboards.length = 0;
+  clearScoreboards()
   for(let i=0; i<info.categories.length; i++){
     if(info.categories[i].match_type == MatchType.Team){
-      scoreboards.push(new Scoreboard(info.categories[i].sheet_id, MatchType.Team, info.categories[i].team_size, info.categories[i].team_count));
-    }
-    if(info.categories[i].match_type == MatchType.Individual){
-      scoreboards.push(new Scoreboard(info.categories[i].sheet_id, MatchType.Individual, info.categories[i].team_size, info.categories[i].team_count));
+      addScoreboard(info.categories[i].sheet_id, MatchType.Team,       info.categories[i].team_size, info.categories[i].team_count);
+    }else if(info.categories[i].match_type == MatchType.Individual){
+      addScoreboard(info.categories[i].sheet_id, MatchType.Individual, info.categories[i].team_size, info.categories[i].team_count);
     }
   }
 
