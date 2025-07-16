@@ -12,7 +12,7 @@ export function applyScore(arg:Scoreboard) {
         for (let k = 0; k < 4; k++) {
           const ScoreButton = GetElems.scoreButton(i+1,j+1,k+1);
           const Square = ScoreButton.parentElement!
-          Square.classList.remove('hit', 'miss', 'uncertain');
+          Square.classList.remove('hit', 'miss', 'uncertain', 'early', 'late');
           ScoreButton.disabled = false;
           if(arg.teams[i].archers[j].number == 0){
             ScoreButton.disabled = true
@@ -58,6 +58,51 @@ export function applyScore(arg:Scoreboard) {
   }
 }
 
+export function applySavedScore(arg:Scoreboard) {
+  for (let i = 0; i < arg.teams.length; i++) {
+    for (let j = 0; j < arg.teamSize; j++) {
+      if(arg.method != "distance"){
+        for (let k = 0; k < 4; k++) {
+          const ScoreButton = GetElems.scoreButton(i+1,j+1,k+1);
+          const Square = ScoreButton.parentElement!
+          Square.classList.remove('prev-hit', 'prev-miss', 'prev-uncertain', 'prev-early', 'prev-late');
+          ScoreButton.disabled = false;
+          if(arg.teams[i].archers[j].number == 0){
+            ScoreButton.disabled = true
+          }else if(arg.teams[i].archers[j].score[k] === "o"){
+            Square.classList.add('prev-hit');
+          }else if(arg.teams[i].archers[j].score[k] === "x"){
+            Square.classList.add('prev-miss');
+          }else if(arg.teams[i].archers[j].score[k] === "?"){
+            Square.classList.add('prev-uncertain');
+          }else if(arg.teams[i].archers[j].score[k] === "E"){
+            Square.classList.add('prev-early','prev-hit');
+          }else if(arg.teams[i].archers[j].score[k] === "L"){
+            Square.classList.add('prev-late','prev-hit');
+          }else if(arg.teams[i].archers[j].score[k] === "e"){
+            Square.classList.add('prev-early','prev-miss');
+          }else if(arg.teams[i].archers[j].score[k] === "l"){
+            Square.classList.add('prev-late','prev-miss');
+          }
+        }
+      }else{
+        // const scoreSlide = GetElems.scoreSlide(i+1,j+1);
+        // const scoreSlideValue = GetElems.scoreSlideValue(i+1,j+1);
+
+        // scoreSlide.disabled = false;
+        // scoreSlide.value = "0";
+        // scoreSlideValue.textContent = "0";
+        // if(arg.teams[i].archers[j].number == 0){
+        //   scoreSlide.disabled = true
+        // }else{
+        //   scoreSlide.value            = arg.teams[i].archers[j].distance.toString();
+        //   scoreSlideValue.textContent = arg.teams[i].archers[j].distance.toString();
+        // }
+      }
+    }
+  }
+}
+
 export function applyScoreboardData(arg:Scoreboard){
   //チーム名
   for(let i=0; i<arg.teams.length; i++){
@@ -86,7 +131,7 @@ export function clearScoreboard(arg:Scoreboard){
   Array.from(document.getElementsByClassName("square-button")).forEach((button, index) => {
     let elem = button.parentElement as HTMLElement;
     if(elem){
-      elem.classList.remove("hit", "miss", "uncertain");
+      elem.classList.remove("hit", "miss", "uncertain", "early", "late", "prev-hit", "prev-miss", "prev-uncertain", "prev-early", "prev-late");
     }
   })
 }

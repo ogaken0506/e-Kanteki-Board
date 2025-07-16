@@ -12,7 +12,7 @@ import * as Comm     from '../network/communication';
 import info   from '../class/info';
 import { generateScoreboardElements, generateTeamSelectElem } from './generate';
 import * as Opt from './selectOptions';
-import { applyScoreboardData, clearScoreboard } from './scoreboardView';
+import { applySavedScore, applyScoreboardData, clearScoreboard } from './scoreboardView';
 
 const selectionModeButton = document.getElementById('selection-mode' ) as HTMLButtonElement;
 const registerButton      = document.getElementById('register')        as HTMLButtonElement;
@@ -27,6 +27,7 @@ export async function onCategoryClick(e:Event){
 
   setCurrentIndex(selectedIndex);
   let currentSB = getCurrentScoreboard();
+  let savedSB = getCurrentSavedScoreboard();
   generateTeamSelectElem(currentSB.teams.length);
 
   changeCommunicationState(1);
@@ -87,6 +88,7 @@ export async function onCategoryClick(e:Event){
 
   //スコアボードから記録を再現
   applyScoreboardData(currentSB);
+  applySavedScore(savedSB);
 
   changeCommunicationState(-1);
 }
@@ -211,6 +213,7 @@ export async function sidebarChangeEventHandler(e:Event){
   await Comm.getScore(currentSB);
   applyScoreboardData(currentSB);
   savedSB.loadScoreboard(currentSB);
+  applySavedScore(savedSB);
   changeCommunicationState(-1);
 }
 
@@ -241,6 +244,7 @@ export async function onRegisterClick(e:Event){
   if(await Comm.verifyUpdate(currentSB)) {
     registerButton.textContent = "成功";
     savedSB.loadScoreboard(currentSB);
+    applySavedScore(savedSB);
   }else{
     registerButton.textContent = "失敗";
 

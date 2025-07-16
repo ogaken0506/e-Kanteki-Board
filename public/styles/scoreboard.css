@@ -256,6 +256,34 @@
         & .uncertain {
           background-image: url('../img/triangle.svg');
         }
+        & .prev-hit,
+        & .prev-miss,
+        & .prev-uncertain {
+          outline-color: transparent;
+          outline-width:min(0.01vw, calc(0.01svh * (16 / 9)));
+          outline-style: solid;
+          border-width: min(0.16vw, calc(0.16svh * (16 / 9)));
+          border-style: solid;
+          box-sizing: border-box;
+        }
+        & .prev-hit {
+          border-color: rgba(255, 0, 0, 0.5);
+        }
+        & .prev-miss {
+          border-color: rgba(0, 0, 255, 0.5);
+        }
+        & .prev-uncertain {
+          outline-color: #ffff0080;
+          border-color: #fbfb0080;
+        }
+        & .prev-early{
+          outline-color: rgba(255, 255, 255, 0.6);
+          border-style:dashed;
+        }
+        & .prev-late{
+          outline-color: rgba(0, 0, 0, 0.6);
+          border-style:dashed;
+        }
 
         & .team-save{
           width:100%;
