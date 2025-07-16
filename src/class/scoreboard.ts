@@ -97,7 +97,7 @@ export class Scoreboard {
       if(dataStr.split(',')[i]){
         for(let j = 0; j < 4; j++){
           if(dataStr.split(',')[i].split("")[j]){
-            if(dataStr.split(',')[i].split("")[j].match(/o|x|#|\?/)){
+            if(dataStr.split(',')[i].split("")[j].match(/o|x|#|\?|E|L|e|l/)){
               this.teams[index].archers[i].score[j] = dataStr.split(',')[i].split("")[j];
             }else{
               this.teams[index].archers[i].score[j] = "#";

@@ -104,7 +104,6 @@
             left: 0%;
             background-color: pink;
           }
-
           & #miss-button{
             top: 100%;
             left: 0%;
@@ -119,6 +118,30 @@
             top: 0%;
             right: -100%;
             background-color:#a0ffa0;
+          }
+          & #early-hit-button{
+            top: -100%;
+            right: -100%;
+            background-color: pink;
+            scale: 0.9;
+          }
+          & #late-hit-button{
+            top: -100%;
+            left: -100%;
+            background-color: pink;
+            scale: 0.9;
+          }
+          & #early-miss-button{
+            top: 100%;
+            right: -100%;
+            background-color:cyan;
+            scale: 0.9;
+          }
+          & #late-miss-button{
+            top: 100%;
+            left: -100%;
+            background-color:cyan;
+            scale: 0.9;
           }
           & .close{
             width:100%;
@@ -176,6 +199,44 @@
           width:   100%;
           aspect-ratio: 1;
           background-color: #ffdb77;
+        }
+        & .timing-svg {
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          margin: 0;
+          padding: 0;
+          overflow: hidden;
+        }
+        & .early-letter,
+        & .late-letter {
+          display: none;
+          position:absolute;
+          x: 50%;
+          y: 50%;
+          margin: 0;
+          padding: 0;
+          overflow: hidden;
+          font-family: "HG正楷書体-PRO", "HiraMinProN-W6", serif;
+          font-size: min(5.8vw, calc(5.8vh * (16 / 9)));
+          dominant-baseline: central;
+          text-anchor: middle;
+        }
+        & .early{
+          & .early-letter{
+            display: block;
+            fill: white;
+            stroke: black;
+            stroke-width: min(0.05vw, calc(0.05vh * (16 / 9)));
+          }
+        }
+        & .late{
+          & .late-letter{
+            display: block;
+            fill: black;
+            stroke: white;
+            stroke-width: min(0.03vw, calc(0.03vh * (16 / 9)));
+          }
         }
         & .hit,
         & .miss,

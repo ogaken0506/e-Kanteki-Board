@@ -210,10 +210,10 @@ export async function verifyUpdate(arg:Scoreboard):Promise<boolean>{
   for(let i=0; i<arg.teams.length; i++){
     if(uploadedScore.teams[i].name != arg.teams[i].name) return false;
     for(let j=0; j<arg.teams[i].archers.length; j++){
-      if(uploadedScore.teams[i].archers[j].number           != arg.teams[i].archers[j].number)           return false;
-      if(uploadedScore.teams[i].archers[j].name             != arg.teams[i].archers[j].name)             return false;
-      if(uploadedScore.teams[i].archers[j].score.toString() != arg.teams[i].archers[j].score.toString()) return false;
-      if(uploadedScore.teams[i].archers[j].distance         != arg.teams[i].archers[j].distance)         return false;
+      if(uploadedScore.teams[i].archers[j].number           != arg.teams[i].archers[j].number)           {console.warn("uploaded",uploadedScore.teams[i].archers[j].number,  "current",arg.teams[i].archers[j].number);  return false;}
+      if(uploadedScore.teams[i].archers[j].name             != arg.teams[i].archers[j].name)             {console.warn("uploaded",uploadedScore.teams[i].archers[j].name,    "current",arg.teams[i].archers[j].name);    return false;}
+      if(uploadedScore.teams[i].archers[j].score.toString() != arg.teams[i].archers[j].score.toString()) {console.warn("uploaded",uploadedScore.teams[i].archers[j].score,   "current",arg.teams[i].archers[j].score);   return false;}
+      if(uploadedScore.teams[i].archers[j].distance         != arg.teams[i].archers[j].distance)         {console.warn("uploaded",uploadedScore.teams[i].archers[j].distance,"current",arg.teams[i].archers[j].distance);return false;}
       console.log("team:"+i.toString()+".archer:"+j.toString()+".ok")
     }
   }

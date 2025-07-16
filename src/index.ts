@@ -118,6 +118,10 @@ document.addEventListener('click', function (e) {
     document.getElementById("miss-button")?.remove();
     document.getElementById("uncertain-button")?.remove();
     document.getElementById("erase-button")?.remove();
+    document.getElementById( "early-hit-button")?.remove();
+    document.getElementById(  "late-hit-button")?.remove();
+    document.getElementById("early-miss-button")?.remove();
+    document.getElementById( "late-miss-button")?.remove();
   }
   if(registerButton.textContent!.match(/^失敗$|^成功$/))registerButton.textContent = "登録";
 });

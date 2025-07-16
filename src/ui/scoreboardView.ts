@@ -22,6 +22,14 @@ export function applyScore(arg:Scoreboard) {
             Square.classList.add('miss');
           }else if(arg.teams[i].archers[j].score[k] === "?"){
             Square.classList.add('uncertain');
+          }else if(arg.teams[i].archers[j].score[k] === "E"){
+            Square.classList.add('early','hit');
+          }else if(arg.teams[i].archers[j].score[k] === "L"){
+            Square.classList.add('late','hit');
+          }else if(arg.teams[i].archers[j].score[k] === "e"){
+            Square.classList.add('early','miss');
+          }else if(arg.teams[i].archers[j].score[k] === "l"){
+            Square.classList.add('late','miss');
           }
         }
         let hitCount = 0;

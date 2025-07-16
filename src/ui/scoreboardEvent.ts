@@ -8,18 +8,27 @@ export function onSquareClick(e:Event){
     document.getElementById("miss-button")?.remove();
     document.getElementById("uncertain-button")?.remove();
     document.getElementById("erase-button")?.remove();
+
+    document.getElementById( "early-hit-button")?.remove();
+    document.getElementById(  "late-hit-button")?.remove();
+    document.getElementById("early-miss-button")?.remove();
+    document.getElementById( "late-miss-button")?.remove();
     return;
   }
   const hitButton       = document.createElement('button');
   const missButton      = document.createElement('button');
   const uncertainButton = document.createElement('button');
   const eraseButton     = document.createElement('button');
+  const earlyHitButton  = document.createElement('button');
+  const lateHitButton   = document.createElement('button');
+  const earlyMissButton = document.createElement('button');
+  const lateMissButton  = document.createElement('button');
 
-  const types = ["miss", "hit",  "uncertain", "erase"];
-  const buttons = [missButton, hitButton, uncertainButton, eraseButton];
-  const texts = ['外', '中', '疑', '消'];
+  const types = ["miss", "hit",  "uncertain", "erase", "early-hit", "late-hit", "early-miss", "late-miss"];
+  const buttons = [missButton, hitButton, uncertainButton, eraseButton, earlyHitButton, lateHitButton, earlyMissButton, lateMissButton];
+  const texts = ['外', '中', '疑', '消', '早', '遅', '早', '遅'];
 
-  for(let i = 0; i < 4; i++){
+  for(let i = 0; i < 8; i++){
     buttons[i].setAttribute('id', types[i] + "-button");
     buttons[i].setAttribute('class', 'score-button');
     buttons[i].textContent = texts[i];
@@ -47,7 +56,7 @@ function onScoreButtonClick(e:Event){
   const archerIndex = parseInt(archerElem.id.replace(/(^A)/, "")) - 1;
   const scoreIndex  = parseInt(squareElem.id.replace(/(^S)/, "")) - 1;
   if (square) {
-    square.classList.remove("hit", "miss", "uncertain");
+    square.classList.remove("hit", "miss", "uncertain", "early", "late");
 
     switch(scoreButton.id){
       case "hit-button":
@@ -65,12 +74,32 @@ function onScoreButtonClick(e:Event){
       case "erase-button":
         currentSB.teams[teamIndex].archers[archerIndex].score[scoreIndex] = "#";
         break;
+      case "early-hit-button":
+        square.classList.add("early","hit");
+        currentSB.teams[teamIndex].archers[archerIndex].score[scoreIndex] = "E";
+        break;
+      case "late-hit-button":
+        square.classList.add("late","hit");
+        currentSB.teams[teamIndex].archers[archerIndex].score[scoreIndex] = "L";
+        break;
+      case "early-miss-button":
+        square.classList.add("early","miss");
+        currentSB.teams[teamIndex].archers[archerIndex].score[scoreIndex] = "e";
+        break;
+      case "late-miss-button":
+        square.classList.add("late","miss");
+        currentSB.teams[teamIndex].archers[archerIndex].score[scoreIndex] = "l";
+        break;
     }
 
     document.getElementById("hit-button")?.remove();
     document.getElementById("miss-button")?.remove();
     document.getElementById("uncertain-button")?.remove();
     document.getElementById("erase-button")?.remove();
+    document.getElementById( "early-hit-button")?.remove();
+    document.getElementById(  "late-hit-button")?.remove();
+    document.getElementById("early-miss-button")?.remove();
+    document.getElementById( "late-miss-button")?.remove();
 
     let hitCount = 0;
     for(let i=0; i<currentSB.teams[teamIndex].archers[archerIndex].score.length; i++){
