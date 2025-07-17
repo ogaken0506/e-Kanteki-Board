@@ -125,5 +125,8 @@ export function onDistanceInput(e:Event){
   const teamIndex   = parseInt(  teamElem.id.replace(/(^T)/, "")) - 1;
   const archerIndex = parseInt(archerElem.id.replace(/(^A)/, "")) - 1;
   currentSB.teams[teamIndex].archers[archerIndex].distance = parseInt(target.value);
-  GetElems.scoreSlideValue(teamIndex+1,archerIndex+1).textContent = currentSB.teams[teamIndex].archers[archerIndex].distance.toString() + "(" +savedSB.teams[teamIndex].archers[archerIndex].distance.toString() + ")";
+  GetElems.scoreSlideValue(teamIndex+1,archerIndex+1).textContent = currentSB.teams[teamIndex].archers[archerIndex].distance.toString();
+  if(currentSB.teams[teamIndex].archers[archerIndex].distance != savedSB.teams[teamIndex].archers[archerIndex].distance){
+    GetElems.scoreSlideValue(teamIndex+1,archerIndex+1).textContent += "(" +savedSB.teams[teamIndex].archers[archerIndex].distance.toString() + ")";
+  }
 }

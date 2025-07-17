@@ -87,9 +87,13 @@ export function applySavedScore(arg:Scoreboard) {
         }
       }else{
         const scoreSlideValue = GetElems.scoreSlideValue(i+1,j+1);
-        if(arg.teams[i].archers[j].number == 0){
-        }else{
-          scoreSlideValue.textContent = scoreSlideValue.textContent +"("+arg.teams[i].archers[j].distance.toString()+")";
+        const currentDistanceValue = Number(scoreSlideValue.textContent?.replace(/\([0-9]+\)$/,""));
+        if(arg.teams[i].archers[j].number != 0 && scoreSlideValue.textContent){
+          if(currentDistanceValue != arg.teams[i].archers[j].distance){
+            scoreSlideValue.textContent = scoreSlideValue.textContent.replace(/\([0-9]+\)$/,"") + "(" +arg.teams[i].archers[j].distance.toString() + ")";
+          }else{
+            scoreSlideValue.textContent = currentDistanceValue.toString();
+          }
         }
       }
     }
