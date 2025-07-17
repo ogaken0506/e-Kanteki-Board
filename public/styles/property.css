@@ -1,0 +1,15 @@
+@property --page-scale{
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 1;
+}
+@property --width-unit{
+  syntax: "<length>";
+  inherits: true;
+  initial-value: min(1vw, calc(1svh * 16 / 9));
+}
+@property --height-unit{
+  syntax: "<length>";
+  inherits: true;
+  initial-value: min(1svh, calc(1vw * 9 / 16));
+}
