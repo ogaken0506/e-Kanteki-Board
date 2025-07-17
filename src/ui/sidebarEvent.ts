@@ -99,10 +99,14 @@ export async function sidebarChangeEventHandler(e:Event){
   let currentSB = getCurrentScoreboard();
   let savedSB = getCurrentSavedScoreboard();
   let misMatch = await currentSB.compare(savedSB);
+  let arrangedMisMatch:string="";
+  for(let i=0; i<misMatch.length; i++){
+    arrangedMisMatch += misMatch[i] + "\n";
+  }
 
   //未保存の記録がある場合は選択肢を元に戻す
   if(0 < misMatch.length){
-    alert("未保存の記録があります\n"+misMatch.toString());
+    alert("未保存の記録があります\n"+arrangedMisMatch);
     if(target.id == "round-select"){
       for(let i=0; i<target.options.length; i++){
         if(target.options[i].value == currentSB.round){
