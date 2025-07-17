@@ -1,4 +1,4 @@
-import { getCurrentScoreboard } from "../state";
+import { getCurrentSavedScoreboard, getCurrentScoreboard } from "../state";
 import * as GetElems from './getElems';
 
 export function onSquareClick(e:Event){
@@ -113,6 +113,7 @@ function onScoreButtonClick(e:Event){
 
 export function onDistanceInput(e:Event){
   let currentSB = getCurrentScoreboard();
+  let savedSB = getCurrentSavedScoreboard();
   const target = e.target as HTMLInputElement;
   const teamElem = target.closest('.team') as HTMLElement;
   const archerElem = target.closest('.archer') as HTMLElement;
@@ -124,5 +125,5 @@ export function onDistanceInput(e:Event){
   const teamIndex   = parseInt(  teamElem.id.replace(/(^T)/, "")) - 1;
   const archerIndex = parseInt(archerElem.id.replace(/(^A)/, "")) - 1;
   currentSB.teams[teamIndex].archers[archerIndex].distance = parseInt(target.value);
-  GetElems.scoreSlideValue(teamIndex+1,archerIndex+1).textContent = currentSB.teams[teamIndex].archers[archerIndex].distance.toString();
+  GetElems.scoreSlideValue(teamIndex+1,archerIndex+1).textContent = currentSB.teams[teamIndex].archers[archerIndex].distance.toString() + "(" +savedSB.teams[teamIndex].archers[archerIndex].distance.toString() + ")";
 }

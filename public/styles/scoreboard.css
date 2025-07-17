@@ -190,7 +190,7 @@
             text-align: center;
             overflow: hidden; /* はみ出しを隠す */
             font-family: "HG正楷書体-PRO", "HiraMinProN-W6", serif;
-            font-size: min(2vw, calc(2vh * (16 / 9)));
+            font-size: min(1.6vw, calc(1.6vh * (16 / 9)));
           }
         }
         

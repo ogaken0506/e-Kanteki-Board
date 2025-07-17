@@ -86,18 +86,11 @@ export function applySavedScore(arg:Scoreboard) {
           }
         }
       }else{
-        // const scoreSlide = GetElems.scoreSlide(i+1,j+1);
-        // const scoreSlideValue = GetElems.scoreSlideValue(i+1,j+1);
-
-        // scoreSlide.disabled = false;
-        // scoreSlide.value = "0";
-        // scoreSlideValue.textContent = "0";
-        // if(arg.teams[i].archers[j].number == 0){
-        //   scoreSlide.disabled = true
-        // }else{
-        //   scoreSlide.value            = arg.teams[i].archers[j].distance.toString();
-        //   scoreSlideValue.textContent = arg.teams[i].archers[j].distance.toString();
-        // }
+        const scoreSlideValue = GetElems.scoreSlideValue(i+1,j+1);
+        if(arg.teams[i].archers[j].number == 0){
+        }else{
+          scoreSlideValue.textContent = scoreSlideValue.textContent +"("+arg.teams[i].archers[j].distance.toString()+")";
+        }
       }
     }
   }
