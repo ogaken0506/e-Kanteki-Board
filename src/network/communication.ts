@@ -119,7 +119,7 @@ export async function registerScore(arg:Scoreboard){
       }
     }
   }
-  if(arg.matchType == MatchType.Individual){
+  if(arg.matchType == MatchType.Individual && arg.method != MatchMethod.Distance){
     let data = await getValues(arg.sheetId, RECEIVED_DATA_RANGE);
     if(data && arg.shajo != -1){
       let column = data[0].indexOf(arg.round+'-archer');
