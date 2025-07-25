@@ -40,6 +40,9 @@ export function addRoundOption(name:string, shortName:string, method:string){
     console.warn('roundSelectElem not found');
     return;
   }
+  if(!name&&!shortName&&!method){//空っぽはスルー
+    return;
+  }
   const opt = document.createElement('option');
   opt.textContent = DOMPurify.sanitize(name);
   opt.setAttribute("value", DOMPurify.sanitize(shortName));

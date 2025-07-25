@@ -3,6 +3,7 @@ import { getValues, updateValues } from './api';
 
 const ORDER_RANGE         =         'ORDER!A1:ZZ1000';
 const RECEIVED_DATA_RANGE = 'RECEIVED_DATA!A1:ZZ1000';
+const ROUNDS_DATA_RANGE   =        'ROUNDS!A1:ZZ1000';
 
 export async function getTeamList(id:string, round:string): Promise<string[]>{
   let data = await getValues(id, ORDER_RANGE);
@@ -14,6 +15,24 @@ export async function getTeamList(id:string, round:string): Promise<string[]>{
     return data.map((eachRowData: any) => eachRowData[column]).filter((value) => (value != "" && value != undefined));
   }
   return [];
+}
+
+export async function getRoundRawValue(id:string): Promise<string[][]>{
+  let data = await getValues(id, ROUNDS_DATA_RANGE);
+  if(data){
+    //by Gemini
+    const targetHeaders = ["name", "short_name", "method"];
+    // 対象の列インデックスを抽出
+    const header = data[0];
+    const targetIndexes = header
+      .map((value, index) => targetHeaders.includes(value) ? index : -1)
+      .filter(index => index !== -1);
+    // 抽出
+    const filteredData = data.map(row => targetIndexes.map(i => row[i]));
+
+    return filteredData;
+  }
+  return [[]];
 }
 
 export async function getScore(arg:Scoreboard): Promise<Scoreboard> {

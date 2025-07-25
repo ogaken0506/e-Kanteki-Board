@@ -33,12 +33,23 @@ export async function onCategoryClick(e:Event){
   changeCommunicationState(1);
   document.getElementById('sidebar-content')!.style.backgroundColor = info.categories[selectedIndex].background_color;
   let PromiseTeamList:Promise<string[]> = Comm.getTeamList(currentSB.sheetId, currentSB.round);
+  let roundsArray = await Comm.getRoundRawValue(currentSB.sheetId);
 
   //roundの選択肢削除&生成
   Opt.clearRoundOptions();
-  let rounds = info.categories[selectedIndex].rounds;
-  for(let i=0; i<rounds.length; i++){
-    Opt.addRoundOption(rounds[i].name, rounds[i].short_name, rounds[i].method)
+  let nameColumn = roundsArray[0].indexOf("name");
+  let shortNameColumn = roundsArray[0].indexOf("short_name");
+  let methodColumn = roundsArray[0].indexOf("method");
+  if(nameColumn != -1 && shortNameColumn != -1 && methodColumn != -1){
+    for(let i=1; i<roundsArray.length; i++){// 1行目は項目名のため除く
+      Opt.addRoundOption(roundsArray[i][nameColumn], roundsArray[i][shortNameColumn], roundsArray[i][methodColumn])
+    }
+  }else if(nameColumn == -1){
+    console.warn("name列が見つかりません");
+  }else if(shortNameColumn == -1){
+    console.warn("short_name列が見つかりません");
+  }else if(methodColumn == -1){
+    console.warn("method列が見つかりません");
   }
   roundSelectElem.selectedIndex = -1;
 
@@ -69,9 +80,14 @@ export async function onCategoryClick(e:Event){
     }
   }
 
-  groupSelectElem.selectedIndex = currentSB.group;
-
-  shajoSelectElem.selectedIndex = currentSB.shajo;
+  if(0<currentSB.teams.length){
+    groupSelectElem.selectedIndex = Math.floor(GetElems.teamSelect(1).selectedIndex / (info.venue.shajo_count * currentSB.teamCount))
+    shajoSelectElem.selectedIndex = Math.floor((GetElems.teamSelect(1).selectedIndex % (info.venue.shajo_count * currentSB.teamCount)) / currentSB.teamCount)
+    currentSB.shajo = shajoSelectElem.selectedIndex;
+    currentSB.group = groupSelectElem.selectedIndex;
+    savedSB.shajo = shajoSelectElem.selectedIndex;
+    savedSB.group = groupSelectElem.selectedIndex;
+  }
 
   generateScoreboardElements(currentSB);
   if(currentSB.method == "distance"){
