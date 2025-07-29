@@ -162,13 +162,13 @@
             align-content: center;
             text-align: center;
             overflow: hidden; /* はみ出しを隠す */
-            writing-mode: vertical-lr;
             direction: rtl;
             background-color: #ffdb77;
           }
           & .distance-input{
             display: inline-block;
             height: min(28vh, calc(28vw * (9 / 16)));
+            writing-mode: vertical-rl;
           }
           & .far{
             width:100%;
