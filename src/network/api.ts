@@ -7,7 +7,8 @@ const DISCOVERY_DOC = 'https://sheets.googleapis.com/$discovery/rest?version=v4'
 const SCOPES = 'https://www.googleapis.com/auth/spreadsheets';
 
 let tokenClient: google.accounts.oauth2.TokenClient;
-let expires_at:number = -1;
+export let expires_at:number = -1;
+export let expires_in:number = -1;
 let gapiInited = false;
 let gisInited = false;
 let isLoggedIn = false;
@@ -40,7 +41,10 @@ function gisLoaded() {
       signinLabel.textContent = 'ログイン済み'
       isLoggedIn = true;
       const now = Math.floor(Date.now() / 1000);
-      if(tokenResponse.expires_in)expires_at = now + parseInt(tokenResponse.expires_in);
+      if(tokenResponse.expires_in){
+        expires_at = now + parseInt(tokenResponse.expires_in)
+        expires_in = parseInt(tokenResponse.expires_in)
+      };
     }
   });
   gisInited = true;

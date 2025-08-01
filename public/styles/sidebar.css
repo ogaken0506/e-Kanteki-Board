@@ -47,6 +47,7 @@ input[type='radio'] {
     サイドバー共通設定エリア (#sidebar-common-content)
     =============================================== */
 #sidebar-common-content {
+  position: relative;
   /* グリッド配置 */
   grid-row: 3 / 4;    /* 3行目 */
 
@@ -184,4 +185,23 @@ input[type='radio'] {
 
   /* タイポグラフィ */
   font-size: min(2vw, calc(2svh * (16 / 9)));
+}
+
+/* ===============================================
+    タイマー (.timer-wrapper)
+    =============================================== */
+#timer-wrapper {
+  position: absolute;
+  left:0;
+  bottom:0;
+  padding: 0;
+  margin: 0;
+  width: min(5vw, calc(5svh * (16 / 9)));
+  height: min(6vw, calc(6svh * (16 / 9)));
+
+  & svg{
+    width: min(5vw, calc(5svh * (16 / 9)));
+    height: min(6vw, calc(6svh * (16 / 9)));
+  
+  }
 }

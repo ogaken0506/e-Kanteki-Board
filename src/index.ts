@@ -2,6 +2,7 @@ import {
   addScoreboard,
   changeCommunicationState,
   clearScoreboards,
+  updateTimerState
 } from './state'
 
 import { 
@@ -128,3 +129,5 @@ document.addEventListener('click', function (e) {
 
 //ダブルタップによるズーム防止
 document.addEventListener('dblclick', function(e){e.preventDefault()}, { passive: false });
+
+setInterval(updateTimerState, 1000);
