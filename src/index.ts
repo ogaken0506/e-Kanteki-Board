@@ -2,6 +2,7 @@ import {
   addScoreboard,
   changeCommunicationState,
   clearScoreboards,
+  getCurrentScoreboard,
   updateTimerState
 } from './state'
 
@@ -33,7 +34,7 @@ let isValidInfoFile = false;
 const selectionModeButton = document.getElementById('selection-mode') as HTMLButtonElement;
 const registerButton   = document.getElementById('register') as HTMLButtonElement;
 
-generateScoreboardElements(new Scoreboard("", MatchType.Team, 6, 1));
+generateScoreboardElements( getCurrentScoreboard() );
 generateTeamSelectElem(1)
 
 // GoogleログインとシートIDと試合の情報のjson(json5)を要求(構造でチェック)

@@ -3,7 +3,9 @@ import { expires_at, expires_in } from "./network/api"
 
 let scoreboards:Scoreboard[] = [];
 let savedScoreboards:Scoreboard[] = [];
-let currentIndex = 0;
+let sampleScoreboard:Scoreboard = new Scoreboard("", MatchType.Team, 5, 1);
+let sampleSavedScoreboard:Scoreboard = new Scoreboard("", MatchType.Team, 5, 1);
+let currentIndex = -1;
 export let communicationCount = 0;
 export let isCommunicating    = false;
 export let isDirectTeamChoice = true;
@@ -27,10 +29,12 @@ export function clearScoreboards(){
   savedScoreboards.length = 0;
 }
 
-export function getCurrentScoreboard(){
+export function getCurrentScoreboard():Scoreboard{
+  if(currentIndex == -1)return sampleScoreboard;
   return scoreboards[currentIndex];
 }
-export function getCurrentSavedScoreboard(){
+export function getCurrentSavedScoreboard():Scoreboard{
+  if(currentIndex == -1)return sampleSavedScoreboard;
   return savedScoreboards[currentIndex];
 }
 
@@ -64,7 +68,7 @@ function enableSidebar(){
   for(let i=0; i<commonButtons.length; i++){
     commonButtons[i].removeAttribute('disabled');
   }
-  if(scoreboards[currentIndex].method == "distance"){
+  if(getCurrentScoreboard().method == "distance"){
     groupSelectElem.setAttribute('disabled', 'true');
     shajoSelectElem.setAttribute('disabled', 'true');
     for(let i=0; i<teamSelectElems.length; i++){
