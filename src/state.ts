@@ -14,6 +14,8 @@ const categoryRadioButtons = document.getElementsByClassName('category-input');
 const teamSelectElems = document.getElementsByClassName('team-select');
 const groupSelectElem  = document.getElementById('group-select' ) as HTMLSelectElement;
 const shajoSelectElem  = document.getElementById('shajo-select' ) as HTMLSelectElement;
+const nextButton  = document.getElementById('next' ) as HTMLButtonElement;
+const prevButton  = document.getElementById('prev' ) as HTMLButtonElement;
 
 export function setCurrentIndex(arg:number){
   currentIndex = arg;
@@ -74,6 +76,8 @@ function enableSidebar(){
     for(let i=0; i<teamSelectElems.length; i++){
       teamSelectElems[i].setAttribute('disabled', 'true');
     }
+    nextButton.disabled = true;
+    prevButton.disabled = true;
   }else if(isDirectTeamChoice){
     groupSelectElem.setAttribute('disabled', 'true');
     shajoSelectElem.setAttribute('disabled', 'true');
@@ -82,6 +86,7 @@ function enableSidebar(){
       teamSelectElems[i].setAttribute('disabled', 'true');
     }
   }
+  checkHistoryButtonState();
 }
 
 function disableSidebar(){
@@ -95,6 +100,23 @@ function disableSidebar(){
   let commonButtons = document.getElementsByClassName('sidebar-common-button');
   for(let i=0; i<commonButtons.length; i++){
     commonButtons[i].setAttribute('disabled', 'true');
+  }
+}
+
+export function checkHistoryButtonState(){
+  const undoButton = document.getElementById('undo') as HTMLButtonElement;
+  const redoButton = document.getElementById('redo') as HTMLButtonElement;
+  if(undoButton && redoButton){
+    if(getCurrentScoreboard().history.length > 0){
+      undoButton.disabled = false;
+    }else{
+      undoButton.disabled = true;
+    }
+    if(getCurrentScoreboard().undone.length > 0){
+      redoButton.disabled = false;
+    }else{
+      redoButton.disabled = true;
+    }
   }
 }
 

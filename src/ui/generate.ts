@@ -1,5 +1,5 @@
 import { Scoreboard } from '../class/scoreboard';
-import { onSquareClick, onDistanceInput } from './scoreboardEvent';
+import { onSquareClick, onDistanceInput, onDistanceChange } from './scoreboardEvent';
 
 const fistTeamHeaderTemplate = document.getElementById("first-team-header-template")! as HTMLTemplateElement;
 const teamHeaderTemplate     = document.getElementById("team-header-template")!       as HTMLTemplateElement;
@@ -87,6 +87,7 @@ export function generateScoreboardElements(arg:Scoreboard){
   });
   Array.from(document.getElementsByClassName("distance-input")).forEach((input, index) => {
     input.addEventListener('input', onDistanceInput)
+    input.addEventListener('change', onDistanceChange)
   })
 }
 

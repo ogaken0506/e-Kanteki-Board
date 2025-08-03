@@ -1,4 +1,4 @@
-import { getCurrentSavedScoreboard, getCurrentScoreboard } from "../state";
+import { checkHistoryButtonState, getCurrentSavedScoreboard, getCurrentScoreboard } from "../state";
 import * as GetElems from './getElems';
 
 export function onSquareClick(e:Event){
@@ -55,6 +55,8 @@ function onScoreButtonClick(e:Event){
   const teamIndex   = parseInt(  teamElem.id.replace(/(^T)/, "")) - 1;
   const archerIndex = parseInt(archerElem.id.replace(/(^A)/, "")) - 1;
   const scoreIndex  = parseInt(squareElem.id.replace(/(^S)/, "")) - 1;
+  const buttonLocale = `T${teamIndex}-A${archerIndex}-S${scoreIndex}`;
+  const beforeScore = currentSB.teams[teamIndex].archers[archerIndex].score[scoreIndex];
   if (square) {
     square.classList.remove("hit", "miss", "uncertain", "early", "late");
 
@@ -92,6 +94,11 @@ function onScoreButtonClick(e:Event){
         break;
     }
 
+    if(beforeScore != currentSB.teams[teamIndex].archers[archerIndex].score[scoreIndex]){
+      currentSB.addHistory(buttonLocale, beforeScore, currentSB.teams[teamIndex].archers[archerIndex].score[scoreIndex]);
+      checkHistoryButtonState();
+    }
+
     document.getElementById("hit-button")?.remove();
     document.getElementById("miss-button")?.remove();
     document.getElementById("uncertain-button")?.remove();
@@ -114,9 +121,9 @@ function onScoreButtonClick(e:Event){
 export function onDistanceInput(e:Event){
   let currentSB = getCurrentScoreboard();
   let savedSB = getCurrentSavedScoreboard();
-  const target = e.target as HTMLInputElement;
-  const teamElem = target.closest('.team') as HTMLElement;
-  const archerElem = target.closest('.archer') as HTMLElement;
+  const distanceInput = e.target as HTMLInputElement;
+  const teamElem   = distanceInput.closest(  '.team') as HTMLElement;
+  const archerElem = distanceInput.closest('.archer') as HTMLElement;
   if(!teamElem || !archerElem){
     console.warn("看的板のHTML構造が変です。");
     return;
@@ -124,9 +131,32 @@ export function onDistanceInput(e:Event){
 
   const teamIndex   = parseInt(  teamElem.id.replace(/(^T)/, "")) - 1;
   const archerIndex = parseInt(archerElem.id.replace(/(^A)/, "")) - 1;
-  currentSB.teams[teamIndex].archers[archerIndex].distance = parseInt(target.value);
-  GetElems.scoreSlideValue(teamIndex+1,archerIndex+1).textContent = currentSB.teams[teamIndex].archers[archerIndex].distance.toString();
-  if(currentSB.teams[teamIndex].archers[archerIndex].distance != savedSB.teams[teamIndex].archers[archerIndex].distance){
+  GetElems.scoreSlideValue(teamIndex+1,archerIndex+1).textContent = distanceInput.value;
+  if(parseInt(distanceInput.value) != savedSB.teams[teamIndex].archers[archerIndex].distance){
     GetElems.scoreSlideValue(teamIndex+1,archerIndex+1).textContent += "(" +savedSB.teams[teamIndex].archers[archerIndex].distance.toString() + ")";
+  }
+}
+
+export function onDistanceChange(e:Event){
+  const distanceInput = e.target as HTMLInputElement;
+  const teamElem   = distanceInput.closest(  '.team') as HTMLElement;
+  const archerElem = distanceInput.closest('.archer') as HTMLElement;
+  if(!teamElem || !archerElem){
+    console.warn("看的板のHTML構造が変です。");
+    return;
+  }
+  const teamIndex   = parseInt(  teamElem.id.replace(/(^T)/, "")) - 1;
+  const archerIndex = parseInt(archerElem.id.replace(/(^A)/, "")) - 1;
+
+  let currentSB = getCurrentScoreboard();
+
+  const inputLocale = `T${teamIndex}-A${archerIndex}-D0`;
+  const before = currentSB.teams[teamIndex].archers[archerIndex].distance.toString();
+
+  currentSB.teams[teamIndex].archers[archerIndex].distance = parseInt(distanceInput.value);
+
+  if(before != currentSB.teams[teamIndex].archers[archerIndex].distance.toString()){
+    currentSB.addHistory(inputLocale, before, currentSB.teams[teamIndex].archers[archerIndex].distance.toString())
+    checkHistoryButtonState();
   }
 }

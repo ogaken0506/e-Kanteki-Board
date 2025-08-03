@@ -18,6 +18,12 @@ export const enum MatchMethod{
   Distance ='distance'
 }
 
+interface Change {
+  locale:string,
+  before:string,
+  after:string
+}
+
 export class Scoreboard {
   sheetId:string;
   matchType:MatchType;
@@ -29,6 +35,9 @@ export class Scoreboard {
   group: number;
   shajo: number;       //0:第1射場, 1:第2射場, 2:第3射場, ...
   method: MatchMethod;
+
+  history:Change[] = [];
+  undone:Change[] = [];
 
   constructor(sheetId:string, matchType:MatchType, teamSize:number, teamCount:number) {
     this.sheetId = sheetId;
@@ -337,6 +346,79 @@ export class Scoreboard {
       }
     }
     return index;
+  }
+
+  addHistory(locale:string, before:string, after:string){
+    this.history.push({
+      locale: locale,
+      before: before,
+      after: after
+    });
+    this.undone = [];
+  }
+  clearHistory(){
+    this.history = [];
+    this.undone = [];
+  }
+  undoHistory(){
+    if(this.history.length == 0){
+      console.warn("操作履歴はありません。");
+      return;
+    }
+    const target = this.history.pop();
+    const teamIndexStr   = target?.locale.split("-")[0];
+    const archerIndexStr = target?.locale.split("-")[1];
+    const dataIndexStr   = target?.locale.split("-")[2];
+    if(!teamIndexStr || !archerIndexStr || !dataIndexStr){
+      console.warn("操作履歴データの形式が異常です。");
+      return;
+    }
+    const teamIndex   = parseInt(  teamIndexStr?.replace(/(^T)/, ""));
+    const archerIndex = parseInt(archerIndexStr?.replace(/(^A)/ ,""));
+    let dataIndex:number
+    if(this.method == MatchMethod.Distance){
+      dataIndex = parseInt(dataIndexStr?.replace(/(^D)/ ,""));
+    }else{
+      dataIndex = parseInt(dataIndexStr?.replace(/(^S)/ ,""));
+    }
+    if(target){
+      this.undone.push(target);
+      if(this.method == MatchMethod.Distance){
+        this.teams[teamIndex].archers[archerIndex].distance = parseInt(target.before);
+      }else{
+        this.teams[teamIndex].archers[archerIndex].score[dataIndex] = target.before;
+      }
+    }
+  }
+  redoHistory(){
+    if(this.undone.length == 0){
+      console.warn("やり直せる操作履歴はありません。");
+      return;
+    }
+    const target = this.undone.pop();
+    const teamIndexStr   = target?.locale.split("-")[0];
+    const archerIndexStr = target?.locale.split("-")[1];
+    const dataIndexStr   = target?.locale.split("-")[2];
+    if(!teamIndexStr || !archerIndexStr || !dataIndexStr){
+      console.warn("操作履歴データの形式が異常です。");
+      return;
+    }
+    const teamIndex   = parseInt(  teamIndexStr?.replace(/(^T)/, ""));
+    const archerIndex = parseInt(archerIndexStr?.replace(/(^A)/ ,""));
+    let dataIndex:number
+    if(this.method == MatchMethod.Distance){
+      dataIndex = parseInt(dataIndexStr?.replace(/(^D)/ ,""));
+    }else{
+      dataIndex = parseInt(dataIndexStr?.replace(/(^S)/ ,""));
+    }
+    if(target){
+      this.history.push(target);
+      if(this.method == MatchMethod.Distance){
+        this.teams[teamIndex].archers[archerIndex].distance = parseInt(target.after);
+      }else{
+        this.teams[teamIndex].archers[archerIndex].score[dataIndex] = target.after;
+      }
+    }
   }
 
   async compare(other:Scoreboard):Promise<string[]>{

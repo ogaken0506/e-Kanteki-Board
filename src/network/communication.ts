@@ -40,6 +40,7 @@ export async function getScore(arg:Scoreboard): Promise<Scoreboard> {
     if(arg.method != MatchMethod.Distance){
       arg.clearArchers();
       arg.clearScore();
+      arg.clearHistory();
       let teamSize = arg.teamSize;
       let data = await getValues(arg.sheetId, RECEIVED_DATA_RANGE);
       if(data){

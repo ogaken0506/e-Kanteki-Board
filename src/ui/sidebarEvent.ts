@@ -5,7 +5,8 @@ import {
   isCommunicating,
   changeCommunicationState,
   isDirectTeamChoice,
-  setSelectionMode
+  setSelectionMode,
+  checkHistoryButtonState
 } from '../state'
 import * as GetElems from './getElems';
 import * as Comm     from '../network/communication';
@@ -234,6 +235,7 @@ export async function sidebarChangeEventHandler(e:Event){
   applyScoreboardData(currentSB);
   savedSB.loadScoreboard(currentSB);
   applySavedScore(savedSB);
+  checkHistoryButtonState();
   changeCommunicationState(-1);
 }
 
@@ -298,4 +300,22 @@ export function onSelectionModeClick(e?:Event){
     groupSelectElem.disabled = true;
     shajoSelectElem.disabled = true;
   }
+}
+
+export function onUndoClick(e:Event){
+  let currentSB = getCurrentScoreboard();
+  let savedSB = getCurrentSavedScoreboard();
+  currentSB.undoHistory();
+  applyScoreboardData(currentSB);
+  applySavedScore(savedSB);
+  checkHistoryButtonState();
+}
+
+export function onRedoClick(e:Event){
+  let currentSB = getCurrentScoreboard();
+  let savedSB = getCurrentSavedScoreboard();
+  currentSB.redoHistory();
+  applyScoreboardData(currentSB);
+  applySavedScore(savedSB);
+  checkHistoryButtonState();
 }

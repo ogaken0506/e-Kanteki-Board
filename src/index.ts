@@ -24,7 +24,9 @@ import {
   onPrevClick,
   onNextClick,
   onCategoryClick,
-  sidebarChangeEventHandler
+  sidebarChangeEventHandler,
+  onUndoClick,
+  onRedoClick
 } from './ui/sidebarEvent';
 
 import JSON5 from 'json5'
@@ -102,6 +104,10 @@ async function applyInfo(){
 document.getElementById('prev')!.addEventListener('click', onPrevClick);
 
 document.getElementById('next')!.addEventListener('click', onNextClick)
+
+document.getElementById('undo')!.addEventListener('click', onUndoClick);
+
+document.getElementById('redo')!.addEventListener('click', onRedoClick)
 
 registerButton.addEventListener('click', onRegisterClick);
 
