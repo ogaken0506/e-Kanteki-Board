@@ -85,8 +85,8 @@ export class Scoreboard {
     }
   }
 
-  loadArcher(indexOrName:number|string, dataStr:string){
-    let index = this.getTeamIndex(indexOrName);
+  loadArcher(teamIndexOrName:number|string, dataStr:string){
+    let index = this.getTeamIndex(teamIndexOrName);
     if(index < 0 || this.teams.length <= index) return;
     for(let i = 0; i < this.teamSize; i++){
       this.clearArchers(index, i)
@@ -99,8 +99,8 @@ export class Scoreboard {
     }
   }
 
-  loadScore(indexOrName:number|string, dataStr:string){
-    let index = this.getTeamIndex(indexOrName);
+  loadScore(teamIndexOrName:number|string, dataStr:string){
+    let index = this.getTeamIndex(teamIndexOrName);
     if(index < 0 || this.teams.length <= index) return;
     for(let i = 0; i < this.teamSize; i++){
       if(dataStr.split(',')[i]){
@@ -119,8 +119,8 @@ export class Scoreboard {
     }
   }
 
-  loadDistance(indexOrName:number|string, dataStr:string){
-    let index = this.getTeamIndex(indexOrName);
+  loadDistance(teamIndexOrName:number|string, dataStr:string){
+    let index = this.getTeamIndex(teamIndexOrName);
     if(index < 0 || this.teams.length <= index) return;
     for(let i = 0; i < this.teamSize; i++){
       if(dataStr.split(',')[i]){
@@ -143,9 +143,9 @@ export class Scoreboard {
     this.teams = structuredClone(other.teams);
   }
 
-  getArcherData(indexOrName?:number|string, start?:number, end?:number):string{
+  getArcherData(teamIndexOrName?:number|string, start?:number, end?:number):string{
     let dataStr = "";
-    if(indexOrName == undefined){
+    if(teamIndexOrName == undefined){
       for(let i = 0; i < this.teams.length; i++){
         for(let j = 0; j < this.teamSize; j++){
           dataStr += this.teams[i].archers[j].number + ":" + this.teams[i].archers[j].name + ",";
@@ -157,7 +157,7 @@ export class Scoreboard {
       return dataStr;
     }
 
-    let index = this.getTeamIndex(indexOrName);
+    let index = this.getTeamIndex(teamIndexOrName);
     if(index < 0 || this.teams.length <= index) return "";
 
     if(start == undefined)start = 0;
@@ -174,9 +174,9 @@ export class Scoreboard {
     return dataStr;
   }
 
-  getScoreData(indexOrName?:number|string, start?:number, end?:number):string{
+  getScoreData(teamIndexOrName?:number|string, start?:number, end?:number):string{
     let dataStr = "";
-    if(indexOrName == undefined){
+    if(teamIndexOrName == undefined){
       for(let i = 0; i < this.teamCount; i++){
         for(let j = 0; j < this.teamSize; j++){
           for(let k = 0; k < 4; k++){
@@ -196,7 +196,7 @@ export class Scoreboard {
     }
 
     
-    let index = this.getTeamIndex(indexOrName);
+    let index = this.getTeamIndex(teamIndexOrName);
     if(index < 0 || this.teams.length <= index) return "";
 
     if(start == undefined)start = 0;
@@ -220,9 +220,9 @@ export class Scoreboard {
     return dataStr;
   }
 
-  getDistanceData(indexOrName?:number|string, start?:number, end?:number):string{
+  getDistanceData(teamIndexOrName?:number|string, start?:number, end?:number):string{
     let dataStr = "";
-    if(indexOrName == undefined){
+    if(teamIndexOrName == undefined){
       for(let i = 0; i < this.teams.length; i++){
         for(let j = 0; j < this.teamSize; j++){
           dataStr += this.teams[i].archers[j].distance + ",";
@@ -233,7 +233,7 @@ export class Scoreboard {
       }
       return dataStr;
     }
-    let index = this.getTeamIndex(indexOrName);
+    let index = this.getTeamIndex(teamIndexOrName);
     if(index < 0 || this.teams.length <= index) return "";
 
     if(start == undefined)start = 0;
@@ -253,8 +253,8 @@ export class Scoreboard {
     return dataStr;
   }
 
-  clearArchers(indexOrName?:number|string, index?:number) {
-    if(indexOrName == undefined){
+  clearArchers(teamIndexOrName?:number|string, index?:number) {
+    if(teamIndexOrName == undefined){
       for(let i = 0; i < this.teams.length; i++){
         for(let j = 0; j < this.teamSize; j++){
           this.teams[i].archers[j] = { name: "", number: 0, score: ["#","#","#","#"] , distance: 0};
@@ -263,7 +263,7 @@ export class Scoreboard {
       return;
     }
     if(index == undefined){
-      let teamIndex = this.getTeamIndex(indexOrName);
+      let teamIndex = this.getTeamIndex(teamIndexOrName);
       if(teamIndex < 0 || this.teams.length <= teamIndex) return;
       for(let i = 0; i < this.teamSize; i++){
         this.teams[teamIndex].archers[i] = { name: "", number: 0, score: ["#","#","#","#"] , distance: 0};
@@ -271,7 +271,7 @@ export class Scoreboard {
       return;
     }
     if(index != undefined){
-      let teamIndex = this.getTeamIndex(indexOrName);
+      let teamIndex = this.getTeamIndex(teamIndexOrName);
       if(teamIndex < 0 || this.teams.length <= teamIndex) return;
       if(index < 0 || this.teams[teamIndex].archers.length <= index) return;
       if(this.teams[teamIndex].archers[index]) this.teams[teamIndex].archers[index] = { name: "", number: 0, score: ["#","#","#","#"] , distance: 0};
@@ -279,8 +279,8 @@ export class Scoreboard {
     }
   }
 
-  clearScore(indexOrName?:number|string, index?:number) {
-    if(indexOrName == undefined){
+  clearScore(teamIndexOrName?:number|string, index?:number) {
+    if(teamIndexOrName == undefined){
       for(let i = 0; i < this.teamCount; i++){
         for(let j = 0; j < this.teamSize; j++){
           if(this.teams[i].archers[j]){
@@ -291,7 +291,7 @@ export class Scoreboard {
       return;
     }
     if(index == undefined){
-      let teamIndex = this.getTeamIndex(indexOrName);
+      let teamIndex = this.getTeamIndex(teamIndexOrName);
       if(teamIndex < 0 || this.teams.length <= teamIndex) return;
       for(let i = 0; i < this.teamSize; i++){
         this.teams[teamIndex].archers[i].score = new Array(4).fill("#");
@@ -299,15 +299,15 @@ export class Scoreboard {
       return
     }
     if(index != undefined){
-      let teamIndex = this.getTeamIndex(indexOrName);
+      let teamIndex = this.getTeamIndex(teamIndexOrName);
       if(teamIndex < 0 || this.teams.length <= teamIndex) return;
       if(index < 0 || this.teamSize <= index) return;
       this.teams[teamIndex].archers[index].score = new Array(4).fill("#");
     }
   }
 
-  clearDistance(indexOrName?:number|string, index?:number) {
-    if(indexOrName == undefined){
+  clearDistance(teamIndexOrName?:number|string, index?:number) {
+    if(teamIndexOrName == undefined){
       for(let i = 0; i < this.teams.length; i++){
         for(let j = 0; j < this.teamSize; j++){
           this.teams[i].archers[j].distance = 0;
@@ -316,7 +316,7 @@ export class Scoreboard {
       return;
     }
     if(index == undefined){
-      let teamIndex = this.getTeamIndex(indexOrName);
+      let teamIndex = this.getTeamIndex(teamIndexOrName);
       if(teamIndex < 0 || this.teams.length <= teamIndex) return;
       for(let i = 0; i < this.teamSize; i++){
         this.teams[teamIndex].archers[i].distance = 0;
@@ -324,22 +324,22 @@ export class Scoreboard {
       return
     }
     if(index != undefined){
-      let teamIndex = this.getTeamIndex(indexOrName);
+      let teamIndex = this.getTeamIndex(teamIndexOrName);
       if(teamIndex < 0 || this.teams.length <= teamIndex) return;
       if(index < 0 || this.teamSize <= index) return;
       this.teams[teamIndex].archers[index].distance = 0;
     }
   }
 
-  getTeamIndex(indexOrName?:number|string):number{
+  getTeamIndex(teamIndexOrName?:number|string):number{
     let index = -1;
-    if(typeof indexOrName == "number"){
-      index = indexOrName;
+    if(typeof teamIndexOrName == "number"){
+      index = teamIndexOrName;
       return index;
     }
-    if(typeof indexOrName == "string"){
+    if(typeof teamIndexOrName == "string"){
       for(let i = 0; i < this.teams.length; i++){
-        if(this.teams[i].name == indexOrName){
+        if(this.teams[i].name == teamIndexOrName){
           index = i;
           break;
         }
