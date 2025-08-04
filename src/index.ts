@@ -2,7 +2,7 @@ import {
   addScoreboard,
   changeCommunicationState,
   clearScoreboards,
-  getCurrentScoreboard,
+  sampleScoreboard,
   updateTimerState
 } from './state'
 
@@ -36,7 +36,8 @@ let isValidInfoFile = false;
 const selectionModeButton = document.getElementById('selection-mode') as HTMLButtonElement;
 const registerButton   = document.getElementById('register') as HTMLButtonElement;
 
-generateScoreboardElements( getCurrentScoreboard() );
+sampleScoreboard.loadArcher(0,"1:那須与一,2:藤原秀郷,3:板額御前,4:巴御前,5:大島光義")
+generateScoreboardElements( sampleScoreboard );
 generateTeamSelectElem(1)
 
 // GoogleログインとシートIDと試合の情報のjson(json5)を要求(構造でチェック)

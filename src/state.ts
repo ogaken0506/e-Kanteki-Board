@@ -3,8 +3,8 @@ import { expires_at, expires_in } from "./network/api"
 
 let scoreboards:Scoreboard[] = [];
 let savedScoreboards:Scoreboard[] = [];
-let sampleScoreboard:Scoreboard = new Scoreboard("", MatchType.Team, 5, 1);
-let sampleSavedScoreboard:Scoreboard = new Scoreboard("", MatchType.Team, 5, 1);
+export let sampleScoreboard:Scoreboard = new Scoreboard("", MatchType.Team, 5, 1);
+export let sampleSavedScoreboard:Scoreboard = new Scoreboard("", MatchType.Team, 5, 1);
 let currentIndex = -1;
 export let communicationCount = 0;
 export let isCommunicating    = false;
