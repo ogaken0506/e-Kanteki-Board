@@ -18,7 +18,7 @@ const categorySchema = z.object({
   "background_color":z.string().startsWith("#").max(10),
   "team_size":z.number().positive(),
   "team_count":z.number().positive(),
-  "rounds": z.array(roundSchema).max(200).readonly()
+  "rounds": z.array(roundSchema).max(200).readonly().optional()
 }).readonly()
 
 const categoriesSchema = z.array(categorySchema).max(200).readonly()
