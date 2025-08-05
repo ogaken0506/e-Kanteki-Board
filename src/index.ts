@@ -32,6 +32,8 @@ import {
 import JSON5 from 'json5'
 import { applyScoreboardData } from './ui/scoreboardView';
 
+const version = "ver.20250806"
+
 let isValidInfoFile = false;
 
 const selectionModeButton = document.getElementById('selection-mode') as HTMLButtonElement;
@@ -41,6 +43,9 @@ sampleScoreboard.loadArcher(0,"1:那須与一,2:藤原秀郷,3:板額御前,4:�
 generateScoreboardElements( sampleScoreboard );
 generateTeamSelectElem(1);
 applyScoreboardData(sampleScoreboard);
+
+const scriptVersionElem = document.getElementById("script-version")
+if(scriptVersionElem)scriptVersionElem.textContent = version;
 
 // GoogleログインとシートIDと試合の情報のjson(json5)を要求(構造でチェック)
 document.getElementById('info-file')!.addEventListener('change', function(e){
