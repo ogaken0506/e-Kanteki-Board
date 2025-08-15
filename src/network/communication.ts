@@ -138,8 +138,7 @@ export async function registerScore(arg:Scoreboard){
         if(0<archerCount)await updateValues(arg.sheetId, 'RECEIVED_DATA!'+columnLetter+(row+1).toString(), values)
       }
     }
-  }
-  if(arg.matchType == MatchType.Individual && arg.method != MatchMethod.Distance){
+  }else if(arg.matchType == MatchType.Individual && arg.method != MatchMethod.Distance){
     let data = await getValues(arg.sheetId, RECEIVED_DATA_RANGE);
     if(data && arg.shajo != -1){
       let column = data[0].indexOf(arg.round+'-archer');
@@ -150,8 +149,7 @@ export async function registerScore(arg:Scoreboard){
 
       await updateValues(arg.sheetId, 'RECEIVED_DATA!'+columnLetter+(row+1).toString(), values)
     }
-  }
-  if(arg.method == MatchMethod.Distance){
+  }else if(arg.method == MatchMethod.Distance){
     let data = await getValues(arg.sheetId, RECEIVED_DATA_RANGE);
     if(data){
       let column = data[0].indexOf(arg.round+'-archer');
@@ -181,7 +179,9 @@ async function retrieveOrderData(arg:Scoreboard, teamIndex:number):Promise<strin
     teamColumn = data[0].indexOf(arg.round + "-team");
     archerColumn = data[0].indexOf(arg.round + "-archer");
     if(teamColumn != -1 && archerColumn != -1){
-      if(arg.teams[0].name!="")index   = data.map((eachRowData: any) => eachRowData[teamColumn]).indexOf(arg.teams[teamIndex].name);
+      if(arg.teams[teamIndex].name != ""){
+        index = data.map((eachRowData: any) => eachRowData[teamColumn]).indexOf(arg.teams[teamIndex].name);
+      }
       if(index != -1){
         let orderStr = data[index][archerColumn]
         for(let i=0; i<arg.teamSize;i++){
