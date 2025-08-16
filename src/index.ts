@@ -139,7 +139,9 @@ document.addEventListener('click', function (e) {
     document.getElementById("early-miss-button")?.remove();
     document.getElementById( "late-miss-button")?.remove();
   }
-  if(registerButton.textContent!.match(/^失敗$|^成功$/))registerButton.textContent = "登録";
+  if( registerButton.textContent!.match(/^失敗$|^成功$/) ){
+      registerButton.textContent = "登録"
+    };
 });
 
 //ダブルタップによるズーム防止

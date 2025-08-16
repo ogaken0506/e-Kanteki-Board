@@ -40,17 +40,18 @@ export function getCurrentSavedScoreboard():Scoreboard{
   return savedScoreboards[currentIndex];
 }
 
-export function changeCommunicationState(arg:number){
+export function changeCommunicationState(arg:number, message?:string){
   const registerButton      = document.getElementById('register') as HTMLButtonElement;
+  if(!message) message = "通信中...";
   communicationCount = communicationCount + arg;
   if(communicationCount > 0){
     isCommunicating = true;
     disableSidebar();
-    registerButton.textContent = "通信中...";
+    registerButton.textContent = message;
   }else{
     isCommunicating = false;
     enableSidebar();
-    if(registerButton.textContent == "通信中...")registerButton.textContent = "登録";
+    if(registerButton.textContent != "成功" && registerButton.textContent != "失敗")registerButton.textContent = "登録";
   }
 }
 

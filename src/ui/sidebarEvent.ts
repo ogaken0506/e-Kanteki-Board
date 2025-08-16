@@ -261,8 +261,9 @@ export async function onRegisterClick(e:Event){
   if(isCommunicating)return;
   let currentSB = getCurrentScoreboard();
   let savedSB = getCurrentSavedScoreboard();
-  changeCommunicationState(1);
+  changeCommunicationState(1,"登録中...");
   await Comm.registerScore(currentSB);
+  changeCommunicationState(0,"確認中...");
   if(await Comm.verifyUpdate(currentSB)) {
     registerButton.textContent = "成功";
     savedSB.loadScoreboard(currentSB);
