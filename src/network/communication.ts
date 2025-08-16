@@ -1,9 +1,9 @@
 import {Scoreboard, MatchType, MatchMethod} from '../class/scoreboard';
 import { getValues, updateValues } from './api';
 
-const ORDER_RANGE         =         'ORDER!A1:ZZ1000';
-const RECEIVED_DATA_RANGE = 'RECEIVED_DATA!A1:ZZ1000';
-const ROUNDS_DATA_RANGE   =        'ROUNDS!A1:ZZ1000';
+const ORDER_RANGE         =         'ORDER!A1:GZ1000';
+const RECEIVED_DATA_RANGE = 'RECEIVED_DATA!A1:GZ1000';
+const ROUNDS_DATA_RANGE   =        'ROUNDS!A1:Z100';
 
 export async function getTeamList(id:string, round:string): Promise<string[]>{
   let data = await getValues(id, ORDER_RANGE);
@@ -47,11 +47,11 @@ export async function getScore(arg:Scoreboard): Promise<Scoreboard> {
         for(let i=0; i<arg.teamCount; i++){
           //まず既存の記録チェック
           let archerData = retrieveData(data, arg.teams[i].name, arg.round + "-archer" );
-          let scoreData  = retrieveData(data, arg.teams[i].name, arg.round + "-score" );
+          let scoreData  = retrieveData(data, arg.teams[i].name, arg.round + "-score"  );
           if(archerData && scoreData){
-            if(archerData.split(',').length == teamSize && scoreData.split(',').length == teamSize){
+            if(archerDataLength(archerData) == teamSize && scoreData.split(',').length == teamSize){
               arg.loadArcher(arg.teams[i].name, archerData);
-              arg.loadScore(arg.teams[i].name,scoreData);
+              arg.loadScore( arg.teams[i].name,  scoreData);
               continue;
             }else{
               console.warn("チーム名：",arg.teams[i].name)
@@ -63,7 +63,7 @@ export async function getScore(arg:Scoreboard): Promise<Scoreboard> {
           archerData = await retrieveOrderData(arg, i);
           arg.clearArchers(arg.teams[i].name);
           arg.clearScore(arg.teams[i].name);
-          if(archerData.split(',').length == teamSize){
+          if(archerDataLength(archerData) == teamSize){
             arg.loadArcher(arg.teams[i].name, archerData);
             continue;
           }else if(archerData){
@@ -85,9 +85,9 @@ export async function getScore(arg:Scoreboard): Promise<Scoreboard> {
         for(let i=0; i<arg.teams.length; i++){
           //まず既存の記録チェック
           let archerData = retrieveData(data, arg.teams[i].name, arg.round + "-archer" );
-          let scoreData  = retrieveData(data, arg.teams[i].name, arg.round + "-score" );
+          let scoreData  = retrieveData(data, arg.teams[i].name, arg.round + "-score"  );
           if(archerData && scoreData){
-            if(archerData.split(',').length == teamSize && scoreData.split(',').length == teamSize){
+            if(archerDataLength(archerData) == teamSize && scoreData.split(',').length == teamSize){
               arg.loadArcher(arg.teams[i].name, archerData);
               arg.loadDistance(arg.teams[i].name,scoreData);
               continue;
@@ -101,7 +101,7 @@ export async function getScore(arg:Scoreboard): Promise<Scoreboard> {
           archerData = await retrieveOrderData(arg, i);
           arg.clearArchers(arg.teams[i].name);
           arg.clearDistance(arg.teams[i].name);
-          if(archerData.split(',').length == teamSize){
+          if(archerDataLength(archerData) == teamSize){
             arg.loadArcher(arg.teams[i].name, archerData);
             continue;
           }else if(archerData){
@@ -123,9 +123,9 @@ export async function getScore(arg:Scoreboard): Promise<Scoreboard> {
 }
 
 export async function registerScore(arg:Scoreboard){
-  if(arg.matchType == MatchType.Team){
-    let data = await getValues(arg.sheetId, RECEIVED_DATA_RANGE);
-    if(data){
+  let data = await getValues(arg.sheetId, RECEIVED_DATA_RANGE);
+  if(data){
+    if(arg.matchType == MatchType.Team){
       let column = data[0].indexOf(arg.round+'-archer');
       let columnLetter = numToAlphabet(column);
 
@@ -137,21 +137,17 @@ export async function registerScore(arg:Scoreboard){
         if (matches) archerCount -= matches.length;
         if(0<archerCount)await updateValues(arg.sheetId, 'RECEIVED_DATA!'+columnLetter+(row+1).toString(), values)
       }
-    }
-  }else if(arg.matchType == MatchType.Individual && arg.method != MatchMethod.Distance){
-    let data = await getValues(arg.sheetId, RECEIVED_DATA_RANGE);
-    if(data && arg.shajo != -1){
-      let column = data[0].indexOf(arg.round+'-archer');
-      let columnLetter = numToAlphabet(column);
-      let row = data.map((eachRowData: any) => eachRowData[0]).indexOf(arg.teams[0].name);
-      
-      let values:string[][] = [[arg.getArcherData(), arg.getScoreData()]];
+    }else if(arg.matchType == MatchType.Individual && arg.method != MatchMethod.Distance){
+      if(arg.shajo != -1){
+        let column = data[0].indexOf(arg.round+'-archer');
+        let columnLetter = numToAlphabet(column);
+        let row = data.map((eachRowData: any) => eachRowData[0]).indexOf(arg.teams[0].name);
+        
+        let values:string[][] = [[arg.getArcherData(), arg.getScoreData()]];
 
-      await updateValues(arg.sheetId, 'RECEIVED_DATA!'+columnLetter+(row+1).toString(), values)
-    }
-  }else if(arg.method == MatchMethod.Distance){
-    let data = await getValues(arg.sheetId, RECEIVED_DATA_RANGE);
-    if(data){
+        await updateValues(arg.sheetId, 'RECEIVED_DATA!'+columnLetter+(row+1).toString(), values)
+      }
+    }else if(arg.method == MatchMethod.Distance){
       let column = data[0].indexOf(arg.round+'-archer');
       let columnLetter = numToAlphabet(column);
 
@@ -183,19 +179,9 @@ async function retrieveOrderData(arg:Scoreboard, teamIndex:number):Promise<strin
         index = data.map((eachRowData: any) => eachRowData[teamColumn]).indexOf(arg.teams[teamIndex].name);
       }
       if(index != -1){
-        let orderStr = data[index][archerColumn]
-        for(let i=0; i<arg.teamSize;i++){
-          if(orderStr.split(",")[i]){
-            orderData += orderStr.split(",")[i] + ",";
-          }else{
-            orderData += ",";
-          }
-        }
+        orderData = data[index][archerColumn]
       }
     }
-  }
-  if(orderData.match(/,$/)){
-    orderData = orderData.slice(0,-1);
   }
   return orderData;
 }
@@ -212,6 +198,23 @@ function numToAlphabet(index:number):string{
   if(0<=index && index<26)return alphabet[index];
   if(26<=index)return alphabet[Math.floor(index / 26)-1]+alphabet[index%26]
   return "";
+}
+
+function archerDataLength(data:string):number{
+  const archerCount = data.split(',').length;
+  for(let i=0; i<archerCount; i++){
+    const archerData = data.split(',')[i];
+    if(archerData == "") continue;
+    const archerNumber = parseInt(archerData.split(':')[0]);
+    if(isNaN(archerNumber)){
+      return -1;
+    }
+    const archerName = archerData.split(':')[1];
+    if(archerName == undefined){
+      return -1;
+    }
+  }
+  return archerCount;
 }
 
 export async function verifyUpdate(arg:Scoreboard):Promise<boolean>{
