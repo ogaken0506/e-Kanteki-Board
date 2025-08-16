@@ -91,9 +91,11 @@ export class Scoreboard {
     for(let i = 0; i < this.teamSize; i++){
       this.clearArchers(index, i)
       if(dataStr.split(',')[i]){
-        if(!isNaN(parseInt(dataStr.split(',')[i].split(':')[0], 10)) && dataStr.split(',')[i].split(':')[1]){
-          this.teams[index].archers[i].number = parseInt(dataStr.split(',')[i].split(':')[0], 10);
-          this.teams[index].archers[i].name   =          dataStr.split(',')[i].split(':')[1];
+        const archerNumber = parseInt(dataStr.split(',')[i].split(':')[0], 10);
+        const archerName   =          dataStr.split(',')[i].split(':')[1];
+        if(!isNaN(archerNumber) && archerName){
+          this.teams[index].archers[i].number = archerNumber;
+          this.teams[index].archers[i].name   = archerName;
         }
       }
     }
@@ -105,9 +107,10 @@ export class Scoreboard {
     for(let i = 0; i < this.teamSize; i++){
       if(dataStr.split(',')[i]){
         for(let j = 0; j < 4; j++){
-          if(dataStr.split(',')[i].split("")[j]){
-            if(dataStr.split(',')[i].split("")[j].match(/o|x|#|\?|E|L|e|l/)){
-              this.teams[index].archers[i].score[j] = dataStr.split(',')[i].split("")[j];
+          const score = dataStr.split(',')[i].split("")[j];
+          if(score){
+            if(score.match(/o|x|#|\?|E|L|e|l/)){
+              this.teams[index].archers[i].score[j] = score;
             }else{
               this.teams[index].archers[i].score[j] = "#";
             }
