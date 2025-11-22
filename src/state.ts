@@ -131,7 +131,7 @@ export function updateTimerState(){
   elapsed?.setAttribute("d", describeSector(20, 20, 18, centralAngle));
 }
 
-function polarToCartesian(cx, cy, r, angleDeg) {
+function polarToCartesian(cx:number, cy:number, r:number, angleDeg:number) {
   const angleRad = (angleDeg) * Math.PI / 180;
   return {
     x: cx + r * Math.cos(angleRad),
@@ -139,7 +139,7 @@ function polarToCartesian(cx, cy, r, angleDeg) {
   };
 }
 
-function describeSector(cx, cy, r, angle) {
+function describeSector(cx:number, cy:number, r:number, angle:number) {
   const timeOut = document.getElementById("timeout");
   if (angle <= 0){
     return ""
