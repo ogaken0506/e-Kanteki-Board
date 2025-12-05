@@ -19,7 +19,8 @@ var urlsToCache = [
     SERVER_URL + "Match-Info-Generator/index.css",
     SERVER_URL + "Match-Info-Generator/display.css",
     SERVER_URL + "Match-Info-Generator/index.js",
-    SERVER_URL + "bundle.js"
+    SERVER_URL + "bundle.js",
+    SERVER_URL + "License.html"
 ];
 
 self.addEventListener('install', function(event) {
