@@ -1,0 +1,80 @@
+h1{min-width: 450px;}
+
+#venue-wrapper{
+  margin:8px;
+  padding:4px;
+  & table{
+    border-collapse: collapse;
+    text-align: left;
+    width:100%;
+    min-width:450px;
+    & th{
+      padding: 2px;
+    }
+    & td{
+      padding: 2px;
+    }
+  }
+}
+
+#categories-wrapper{
+  margin:8px;
+  text-align: center;
+  & h2{
+    text-align: left;
+  }
+}
+
+.category-wrapper{
+  position: relative;
+  display:flex;
+
+  min-width:450px;
+  border:1px solid black;
+  margin:4px;
+  & .category-number{
+    font-size:larger;
+    min-width:30px;
+    align-content: center;
+    text-align: center;
+  }
+  & .info-table-wrapper{
+    flex-grow: 1;
+    & .info-table{
+      width:100%;
+      border-collapse: collapse;
+      & th{
+        padding: 2px;
+      }
+      & td{
+        padding: 2px;
+        & input[type="text"]{
+          width:95%;
+        }
+        & input[type="color"]{
+          width:30%;
+        }
+        & label{
+          font-size: larger;
+        }
+      }
+    }
+  }
+  & button{
+    align-self: flex-start;
+    display: block;
+    width:  28px;
+    height: 28px;
+  }
+  & #left-close-button{
+    position: absolute;
+    left:1px
+  }
+}
+
+#generate-button{
+  display: block;
+  width:40%;
+  margin:auto;
+  margin-top:50px;
+}

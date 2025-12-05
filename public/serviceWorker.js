@@ -1,4 +1,4 @@
-var CACHE_NAME  = "scoreboard-cache-v20251205";
+var CACHE_NAME  = "scoreboard-cache-v20251206";
 const SERVER_URL = "https://ko-wgaca.f5.si/scoreboard/";
 var urlsToCache = [
     SERVER_URL + "index.html",
@@ -15,6 +15,10 @@ var urlsToCache = [
     SERVER_URL + "img/cross.svg",
     SERVER_URL + "img/triangle.svg",
     SERVER_URL + "img/web_light_sq_SI.svg",
+    SERVER_URL + "Match-Info-Generator/index.html",
+    SERVER_URL + "Match-Info-Generator/index.css",
+    SERVER_URL + "Match-Info-Generator/display.css",
+    SERVER_URL + "Match-Info-Generator/index.js",
     SERVER_URL + "bundle.js"
 ];
 

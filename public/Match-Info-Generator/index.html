@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <title>試合情報ファイル生成ツール</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+    <link href="display.css" rel="stylesheet" type="text/css">
+    <link href="index.css" rel="stylesheet" type="text/css">
+    <script src="index.js" defer></script>
+  </head>
+  <body>
+    <h1>試合情報ファイル生成ツール</h1>
+    <div id="venue-wrapper">
+      <h2>会場</h2>
+      <table border="1">
+        <tbody>
+          <tr>
+            <th>・射場数</th> <td><input type="number" id="shajo-count-input" value="1" min="1" max="99" required></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div id="categories-wrapper">
+      <h2>部門</h2>
+      <div id="categories"></div>
+      <button id="add-category-button">追加</button>
+    </div>
+    <button id="generate-button">生成</button>
+
+    <template id="category-template">
+      <div class="category-wrapper">
+        <div class="category-number"></div> 
+        <div class="info-table-wrapper">
+          <table border="1" class="info-table">
+            <tr>
+              <th>部門名</th>
+              <td><input type="text" data-key="name" required></td>
+            </tr>
+            <tr>
+              <th>URL or ID</th>
+              <td><input type="text" data-key="sheet_id" required></td>
+            </tr>
+            <tr>
+              <th>色</th>
+              <td><input type="color" data-key="background_color" required></td>
+            </tr>
+            <tr>
+              <th>試合形式</th>
+              <td><label><input type="radio" name="match_type" class="match_type_input" value="team" checked> 団体</label>  /  <label>個人 <input type="radio" name="match_type" class="match_type_input" value="individual"></label></td>
+            </tr>
+            <tr>
+              <th>人数</th>
+              <td><input type="number" value="5" min="1" max="99" data-key="team_size" required>人立 / 1射場<input type="number" value="1" min="1" max="99" data-key="team_count" required>チーム</td>
+            </tr>
+          </table>
+        </div>
+        <button id="right-close-button">x</button>
+        <button id="left-close-button">x</button>
+      </div>
+    </template>
+  </body>
+</html>

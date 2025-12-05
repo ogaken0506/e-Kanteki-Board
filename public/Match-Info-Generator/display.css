@@ -1,0 +1,67 @@
+/* モバイルファースト設定 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
+  font-size: 16px; /* スマホ: 16px以上推奨 */
+  line-height: 1.6;
+  color: #333;
+  background-color: #f9f9f9;
+  min-width: 450px;
+}
+
+/* スマートフォン (320px〜768px) */
+@media (max-width: 768px) {
+  body {
+    font-size: 14px; /* スマホで若干小さく */
+    padding: 10px;
+  }
+  
+  main, .container {
+    max-width: 100%; /* 画面幅いっぱい */
+    margin: 0 auto;
+  }
+  
+  h1 {
+    font-size: 24px;
+    margin-bottom: 16px;
+  }
+  
+  h2 {
+    font-size: 20px;
+    margin-bottom: 6px;
+  }
+  
+  button, input, select {
+    font-size: 20px; /* iOSのズーム防止 */
+    padding:2px;
+    border-radius: 8px;
+  }
+}
+
+/* タブレット (769px〜1024px) */
+@media (min-width: 769px) and (max-width: 1024px) {
+  body {
+    font-size: 15px;
+    padding: 15px;
+  }
+  button, input, select {
+    font-size: 20px;
+  }
+}
+
+/* デスクトップ (1025px以上) */
+@media (min-width: 1025px) {
+  body {
+    font-size: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  button, input, select {
+    font-size: 18px;
+  }
+}
