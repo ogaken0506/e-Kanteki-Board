@@ -32,7 +32,7 @@ import {
 import JSON5 from 'json5'
 import { applyScoreboardData } from './ui/scoreboardView';
 
-const version = "ver.20251122"
+const version = "ver.20251205"
 
 let isValidInfoFile = false;
 

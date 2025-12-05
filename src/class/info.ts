@@ -1,7 +1,7 @@
 import { z } from 'zod'
 
 const venueSchema = z.object({
-  "capacity":z.number().positive(),
+  "capacity":z.number().positive().optional(),
   "shajo_count":z.number().positive(),
 }).readonly()
 
