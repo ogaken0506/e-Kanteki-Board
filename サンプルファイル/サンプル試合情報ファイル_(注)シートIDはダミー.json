@@ -1,0 +1,31 @@
+{
+  "categories": [
+    {
+      "name": "個人5",
+      "sheet_id": "0ddbddf7-396a-5196-d47f-bc7b5e23db92",
+      "background_color": "#ff8080",
+      "team_size": 5,
+      "team_count": 1,
+      "match_type": "individual"
+    },
+    {
+      "name": "団体3x2",
+      "sheet_id": "0ddbddf7-396a-5196-d47f-bc7b5e23db92",
+      "background_color": "#7a95ff",
+      "team_size": 3,
+      "team_count": 2,
+      "match_type": "team"
+    },
+    {
+      "name": "団体6x1",
+      "sheet_id": "0ddbddf7-396a-5196-d47f-bc7b5e23db92",
+      "background_color": "#7dff7a",
+      "team_size": 6,
+      "team_count": 1,
+      "match_type": "team"
+    }
+  ],
+  "venue": {
+    "shajo_count": 4
+  }
+}
