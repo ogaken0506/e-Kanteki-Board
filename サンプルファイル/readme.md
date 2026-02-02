@@ -17,3 +17,5 @@
    または試合情報ファイル生成ツール(https://ko-wgaca.f5.si/scoreboard/Match-Info-Generator/index.html)にて生成する。
    生成するときの入力例は「サンプル.avif」を参照。
 4. 実際に使ってみる(https://ko-wgaca.f5.si/scoreboard/)
+  
+  更新日 : 2026/02/02

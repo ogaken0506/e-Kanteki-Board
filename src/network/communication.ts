@@ -21,7 +21,7 @@ export async function getRoundRawValue(id:string): Promise<string[][]>{
   let data = await getValues(id, ROUNDS_DATA_RANGE);
   if(data){
     //by Gemini
-    const targetHeaders = ["name", "short_name", "method"];
+    const targetHeaders = ["name", "column_name", "method"];
     // 対象の列インデックスを抽出
     const header = data[0];
     const targetIndexes = header
