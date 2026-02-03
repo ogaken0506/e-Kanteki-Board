@@ -39,16 +39,16 @@ export async function onCategoryClick(e:Event){
   //roundの選択肢削除&生成
   Opt.clearRoundOptions();
   let nameColumn = roundsArray[0].indexOf("name");
-  let shortNameColumn = roundsArray[0].indexOf("short_name");
+  let columnNameColumn = roundsArray[0].indexOf("column_name");
   let methodColumn = roundsArray[0].indexOf("method");
-  if(nameColumn != -1 && shortNameColumn != -1 && methodColumn != -1){
+  if(nameColumn != -1 && columnNameColumn != -1 && methodColumn != -1){
     for(let i=1; i<roundsArray.length; i++){// 1行目は項目名のため除く
-      Opt.addRoundOption(roundsArray[i][nameColumn], roundsArray[i][shortNameColumn], roundsArray[i][methodColumn])
+      Opt.addRoundOption(roundsArray[i][nameColumn], roundsArray[i][columnNameColumn], roundsArray[i][methodColumn])
     }
   }else if(nameColumn == -1){
     console.warn("name列が見つかりません");
-  }else if(shortNameColumn == -1){
-    console.warn("short_name列が見つかりません");
+  }else if(columnNameColumn == -1){
+    console.warn("column_name列が見つかりません");
   }else if(methodColumn == -1){
     console.warn("method列が見つかりません");
   }

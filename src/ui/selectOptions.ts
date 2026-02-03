@@ -34,18 +34,18 @@ export function clearCategoryOptions(){
   categoryWrapper.innerHTML = "";
 }
 
-export function addRoundOption(name:string, shortName:string, method:string){
+export function addRoundOption(name:string, columnName:string, method:string){
   const roundSelectElem  = document.getElementById('round-select' ) as HTMLSelectElement;
   if(!roundSelectElem){
     console.warn('roundSelectElem not found');
     return;
   }
-  if(!name&&!shortName&&!method){//空っぽはスルー
+  if(!name&&!columnName&&!method){//空っぽはスルー
     return;
   }
   const opt = document.createElement('option');
   opt.textContent = DOMPurify.sanitize(name);
-  opt.setAttribute("value", DOMPurify.sanitize(shortName));
+  opt.setAttribute("value", DOMPurify.sanitize(columnName));
   opt.dataset.method = DOMPurify.sanitize(method);
   roundSelectElem.appendChild(opt);
 }
