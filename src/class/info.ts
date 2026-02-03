@@ -5,20 +5,13 @@ const venueSchema = z.object({
   "shajo_count":z.number().positive(),
 }).readonly()
 
-const roundSchema = z.object({
-  "name":z.string().nonempty().max(200),
-  "short_name":z.string().nonempty().max(200),
-  "method":z.string().max(10).regex(/^normal$|^shoot-off$|^distance$/)
-}).readonly();
-
 const categorySchema = z.object({
   "name" :z.string().nonempty().max(200),
   "sheet_id":z.string().nonempty().max(200),
   "match_type":z.string().max(11).regex(/^team$|^individual$/),
   "background_color":z.string().startsWith("#").max(10),
   "team_size":z.number().positive(),
-  "team_count":z.number().positive(),
-  "rounds": z.array(roundSchema).max(200).readonly().optional()
+  "team_count":z.number().positive()
 }).readonly()
 
 const categoriesSchema = z.array(categorySchema).max(200).readonly()
