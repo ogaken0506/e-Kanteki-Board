@@ -125,7 +125,7 @@ export async function getScore(arg:Scoreboard): Promise<Scoreboard> {
 export async function registerScore(arg:Scoreboard){
   let data = await getValues(arg.sheetId, RECEIVED_DATA_RANGE);
   if(data){
-    if(arg.matchType == MatchType.Team){
+    if(arg.matchType == MatchType.Team && arg.method != MatchMethod.Distance){
       let column = data[0].indexOf(arg.round+'-archer');
       let columnLetter = numToAlphabet(column);
 
