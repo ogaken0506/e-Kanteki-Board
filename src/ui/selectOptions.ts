@@ -6,9 +6,9 @@ export function addCategoryOption(nameStr:string, color:string, id:string){
     console.warn('categoryWrapper not found');
     return;
   }
-  let label = document.createElement('label');
-  let input = document.createElement('input');
-  let nameElem = document.createElement('span');
+  const label = document.createElement('label');
+  const input = document.createElement('input');
+  const nameElem = document.createElement('span');
 
   label.classList.add('category-label');
   label.style.backgroundColor = DOMPurify.sanitize(color);
@@ -34,7 +34,7 @@ export function clearCategoryOptions(){
   categoryWrapper.innerHTML = "";
 }
 
-export function addRoundOption(name:string, columnName:string, method:string){
+export function addRoundOption(name:string = "", columnName:string = "", method:string = ""){
   const roundSelectElem  = document.getElementById('round-select' ) as HTMLSelectElement;
   if(!roundSelectElem){
     console.warn('roundSelectElem not found');
@@ -61,8 +61,8 @@ export function clearRoundOptions(){
 
 export function updateTeamOptions(teamCount:number, teamList:string[], handler?: (this:HTMLSelectElement, e:Event) => any) {
   for(let i=0; i<teamCount; i++){
-    let id = "TS"+(i+1).toString();
-    let select = document.getElementById(id) as HTMLSelectElement;
+    const id = "TS"+(i+1).toString();
+    const select = document.getElementById(id) as HTMLSelectElement;
     if(select == null){
       console.warn("HTMLElement(id:"+id+") not found");
       continue;
@@ -83,7 +83,7 @@ export function updateTeamOptions(teamCount:number, teamList:string[], handler?:
 export function updateGroupOptions(participatingTeams:number, maxActiveTeams:number) {
   const groupSelectElem  = document.getElementById('group-select') as HTMLSelectElement;
   groupSelectElem.innerHTML = "";
-  let groupCount = Math.ceil( participatingTeams / maxActiveTeams );
+  const groupCount = Math.ceil( participatingTeams / maxActiveTeams );
   for(let i=0; i<groupCount; i++){
     const opt = document.createElement('option');
     opt.textContent = "第"+(i+1).toString()+"群";

@@ -30,7 +30,7 @@ class Info{
   constructor(){}
   setInfo(stringfiedJson:string):boolean{
     try{
-      let buf = competitionInfoSchema.parse(JSON.parse(stringfiedJson));
+      const buf = competitionInfoSchema.parse(JSON.parse(stringfiedJson));
       this.venue = buf.venue;
       this.categories = buf.categories;
       return true;

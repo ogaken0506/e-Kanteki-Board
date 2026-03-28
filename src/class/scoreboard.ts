@@ -1,7 +1,7 @@
 export interface Archer {
   name  : string;
   number: number;
-  score : string[];
+  score : [string, string, string, string];
   distance: number;
 }
 export interface Team{
@@ -32,7 +32,7 @@ export class Scoreboard {
   teamSize:number;
   teamCount:number;
   round: string;
-  group: number;
+  groupIndex: number;
   shajo: number;       //0:第1射場, 1:第2射場, 2:第3射場, ...
   method: MatchMethod;
 
@@ -50,7 +50,7 @@ export class Scoreboard {
       archers:Array.from({ length: teamSize }, () => ({ name: "", number: 0, score: ["#","#","#","#"] , distance: 0}))
     }));
     this.round = "";
-    this.group = -1;
+    this.groupIndex = -1;
     this.shajo = 0;
     this.method = MatchMethod.Normal;
   }
@@ -68,7 +68,7 @@ export class Scoreboard {
       this.method = MatchMethod.Distance;
       if(teamList != undefined){
         this.teams = Array.from({ length: teamList.length }, (v,i) => ({
-          name :teamList[i],
+          name :teamList[i] ?? "",
           archers:Array.from({ length: this.teamSize }, () => ({ name: "", number: 0, score: ["#","#","#","#"] , distance: 0}))
         }));
       }else{
@@ -86,50 +86,66 @@ export class Scoreboard {
   }
 
   loadArcher(teamIndexOrName:number|string, dataStr:string){
-    let index = this.getTeamIndex(teamIndexOrName);
+    const index = this.getTeamIndex(teamIndexOrName);
     if(index < 0 || this.teams.length <= index) return;
     for(let i = 0; i < this.teamSize; i++){
       this.clearArchers(index, i)
-      if(dataStr.split(',')[i]){
-        const archerNumber = parseInt(dataStr.split(',')[i].split(':')[0], 10);
-        const archerName   =          dataStr.split(',')[i].split(':')[1];
+      const archerData = dataStr.split(',')[i]?.split(':');
+      const targetArcher = this.teams[index]?.archers[i];
+      if(archerData && targetArcher){
+        const archerNumber = parseInt(archerData[0] ?? "0", 10);
+        const archerName   =          archerData[1];
         if(!isNaN(archerNumber) && archerName){
-          this.teams[index].archers[i].number = archerNumber;
-          this.teams[index].archers[i].name   = archerName;
+          targetArcher.number = archerNumber;
+          targetArcher.name   = archerName;
         }
       }
     }
   }
 
   loadScore(teamIndexOrName:number|string, dataStr:string){
-    let index = this.getTeamIndex(teamIndexOrName);
+    const index = this.getTeamIndex(teamIndexOrName);
     if(index < 0 || this.teams.length <= index) return;
     for(let i = 0; i < this.teamSize; i++){
-      if(dataStr.split(',')[i]){
-        for(let j = 0; j < 4; j++){
-          const score = dataStr.split(',')[i].split("")[j];
-          if(score){
-            if(score.match(/o|x|#|\?|E|L|e|l/)){
-              this.teams[index].archers[i].score[j] = score;
+      const scoreStr = dataStr.split(',')[i]
+      const targetArcher = this.teams[index]?.archers[i];
+      if(targetArcher){
+        if(scoreStr){
+          for(let j = 0; j < 4; j++){
+            const scoreChar = scoreStr[j];
+            if(scoreChar){
+              if(scoreChar.match(/o|x|#|\?|E|L|e|l/)){
+                targetArcher.score[j] = scoreChar;
+              }else{
+                targetArcher.score[j] = "#";
+              }
             }else{
-              this.teams[index].archers[i].score[j] = "#";
+              targetArcher.score[j] = "#";
             }
           }
+        }else{
+          this.clearScore(index, i)
         }
-      }else{
-        this.clearScore(index, i)
       }
     }
   }
 
   loadDistance(teamIndexOrName:number|string, dataStr:string){
-    let index = this.getTeamIndex(teamIndexOrName);
+    const index = this.getTeamIndex(teamIndexOrName);
     if(index < 0 || this.teams.length <= index) return;
     for(let i = 0; i < this.teamSize; i++){
-      if(dataStr.split(',')[i]){
-        this.teams[index].archers[i].distance = parseInt(dataStr.split(',')[i]);
-      }else{
-        this.clearDistance(index, i)
+      const distanceNumber = parseInt(dataStr.split(',')[i] ?? "NaN");
+      const targetArcher = this.teams[index]?.archers[i];
+      if(targetArcher){
+        if(0 <= distanceNumber && distanceNumber <= 99){
+          targetArcher.distance = distanceNumber;
+        }else if(distanceNumber < 0 || 99 < distanceNumber){
+          console.warn(`[Distance Out of Range] Team: ${index}, Archer: ${i}, Value: ${distanceNumber}`);
+          this.clearDistance(index, i);
+        }else{
+          console.warn(`invalid distance value [teamIndex:${index}, archerIndex:${i}, value:${dataStr.split(',')[i]}]`);
+          this.clearDistance(index, i)
+        }
       }
     }
   }
@@ -138,7 +154,7 @@ export class Scoreboard {
     this.sheetId = other.sheetId;
     this.matchType = other.matchType;
     this.round = other.round;
-    this.group = other.group;
+    this.groupIndex = other.groupIndex;
     this.shajo = other.shajo;
     this.method = other.method;
     this.teamCount = other.teamCount;
@@ -151,7 +167,7 @@ export class Scoreboard {
     if(teamIndexOrName == undefined){
       for(let i = 0; i < this.teams.length; i++){
         for(let j = 0; j < this.teamSize; j++){
-          dataStr += this.teams[i].archers[j].number + ":" + this.teams[i].archers[j].name + ",";
+          dataStr += (this.teams[i]?.archers[j]?.number ?? 0) + ":" + (this.teams[i]?.archers[j]?.name ?? "") + ",";
         }
       }
       if(dataStr.match(/,$/)){
@@ -160,7 +176,7 @@ export class Scoreboard {
       return dataStr;
     }
 
-    let index = this.getTeamIndex(teamIndexOrName);
+    const index = this.getTeamIndex(teamIndexOrName);
     if(index < 0 || this.teams.length <= index) return "";
 
     if(start == undefined)start = 0;
@@ -169,7 +185,7 @@ export class Scoreboard {
     if(end < 0 || this.teamSize <= end) return "";
     if(end < start) return "";
     for(let i = start; i <= end; i++){
-      dataStr += this.teams[index].archers[i].number + ":" + this.teams[index].archers[i].name + ",";
+      dataStr += (this.teams[index]?.archers[i]?.number ?? 0) + ":" + (this.teams[index]?.archers[i]?.name ?? "") + ",";
     }
     if(dataStr.match(/,$/)){
       dataStr = dataStr.slice(0,-1);
@@ -183,11 +199,7 @@ export class Scoreboard {
       for(let i = 0; i < this.teamCount; i++){
         for(let j = 0; j < this.teamSize; j++){
           for(let k = 0; k < 4; k++){
-            if(this.teams[i].archers[j].score[k]){
-              dataStr += this.teams[i].archers[j].score[k];
-            }else{
-              dataStr += "#";
-            }
+            dataStr += this.teams[i]?.archers[j]?.score[k] || "#";
           }
           dataStr += ",";
         }
@@ -199,7 +211,7 @@ export class Scoreboard {
     }
 
     
-    let index = this.getTeamIndex(teamIndexOrName);
+    const index = this.getTeamIndex(teamIndexOrName);
     if(index < 0 || this.teams.length <= index) return "";
 
     if(start == undefined)start = 0;
@@ -208,12 +220,13 @@ export class Scoreboard {
     if(end < 0 || this.teamSize <= end) return "";
     if(end < start) return "";
     for(let i = start; i <= end; i++){
-      for(let j = 0; j < 4; j++){
-        if(this.teams[index].archers[i].score[j]){
-          dataStr += this.teams[index].archers[i].score[j];
-        }else{
-          dataStr += "#";
+      const targetArcher = this.teams[index]?.archers[i];
+      if(targetArcher){
+        for(let j = 0; j < 4; j++){
+          dataStr += targetArcher.score[j];
         }
+      }else{
+        dataStr += "####";
       }
       dataStr += ",";
     }
@@ -228,7 +241,7 @@ export class Scoreboard {
     if(teamIndexOrName == undefined){
       for(let i = 0; i < this.teams.length; i++){
         for(let j = 0; j < this.teamSize; j++){
-          dataStr += this.teams[i].archers[j].distance + ",";
+          dataStr += (this.teams[i]?.archers[j]?.distance ?? 0) + ",";
         }
       }
       if(dataStr.match(/,$/)){
@@ -236,7 +249,7 @@ export class Scoreboard {
       }
       return dataStr;
     }
-    let index = this.getTeamIndex(teamIndexOrName);
+    const index = this.getTeamIndex(teamIndexOrName);
     if(index < 0 || this.teams.length <= index) return "";
 
     if(start == undefined)start = 0;
@@ -247,7 +260,7 @@ export class Scoreboard {
 
     
     for(let i = start; i <= end; i++){
-      dataStr += this.teams[index].archers[i].distance + ",";
+      dataStr += (this.teams[index]?.archers[i]?.distance ?? 0) + ",";
     }
 
     if(dataStr.match(/,$/)){
@@ -258,26 +271,27 @@ export class Scoreboard {
 
   clearArchers(teamIndexOrName?:number|string, index?:number) {
     if(teamIndexOrName == undefined){
-      for(let i = 0; i < this.teams.length; i++){
+      this.teams.forEach((team,i) => {
         for(let j = 0; j < this.teamSize; j++){
-          this.teams[i].archers[j] = { name: "", number: 0, score: ["#","#","#","#"] , distance: 0};
+          team.archers[j] = { name: "", number: 0, score: ["#","#","#","#"] , distance: 0};
         }
-      }
+      })
       return;
     }
     if(index == undefined){
-      let teamIndex = this.getTeamIndex(teamIndexOrName);
-      if(teamIndex < 0 || this.teams.length <= teamIndex) return;
+      const teamIndex = this.getTeamIndex(teamIndexOrName);
+      const targetTeam = this.teams[teamIndex];
+      if(!targetTeam){console.warn('invalid team index');return;}
       for(let i = 0; i < this.teamSize; i++){
-        this.teams[teamIndex].archers[i] = { name: "", number: 0, score: ["#","#","#","#"] , distance: 0};
+        targetTeam.archers[i] = { name: "", number: 0, score: ["#","#","#","#"] , distance: 0};
       }
       return;
     }
     if(index != undefined){
-      let teamIndex = this.getTeamIndex(teamIndexOrName);
-      if(teamIndex < 0 || this.teams.length <= teamIndex) return;
-      if(index < 0 || this.teams[teamIndex].archers.length <= index) return;
-      if(this.teams[teamIndex].archers[index]) this.teams[teamIndex].archers[index] = { name: "", number: 0, score: ["#","#","#","#"] , distance: 0};
+      const teamIndex = this.getTeamIndex(teamIndexOrName);
+      const targetTeam = this.teams[teamIndex];
+      if(!targetTeam){console.warn('invalid team index');return;}
+      if(targetTeam.archers[index]) targetTeam.archers[index] = { name: "", number: 0, score: ["#","#","#","#"] , distance: 0};
       return;
     }
   }
@@ -286,26 +300,31 @@ export class Scoreboard {
     if(teamIndexOrName == undefined){
       for(let i = 0; i < this.teamCount; i++){
         for(let j = 0; j < this.teamSize; j++){
-          if(this.teams[i].archers[j]){
-            this.teams[i].archers[j].score = new Array(4).fill("#");
+          const targetArcher = this.teams[i]?.archers[j];
+          if(targetArcher){
+            targetArcher.score = ["#","#","#","#"];
+          }else{
+            console.warn('T'+i.toString()+"-A"+j.toString()+"が存在しないことになっています");
           }
         }
       }
       return;
     }
     if(index == undefined){
-      let teamIndex = this.getTeamIndex(teamIndexOrName);
-      if(teamIndex < 0 || this.teams.length <= teamIndex) return;
+      const teamIndex = this.getTeamIndex(teamIndexOrName);
+      const targetTeam = this.teams[teamIndex];
+      if(!targetTeam){console.warn('invalid team index');return;}
       for(let i = 0; i < this.teamSize; i++){
-        this.teams[teamIndex].archers[i].score = new Array(4).fill("#");
+        const archerIndex = i;
+        targetTeam.archers[archerIndex] ? targetTeam.archers[archerIndex].score = ["#","#","#","#"] : console.warn('T'+teamIndex.toString()+"-A"+archerIndex.toString()+"が存在しないことになっています");
       }
       return
     }
     if(index != undefined){
-      let teamIndex = this.getTeamIndex(teamIndexOrName);
-      if(teamIndex < 0 || this.teams.length <= teamIndex) return;
-      if(index < 0 || this.teamSize <= index) return;
-      this.teams[teamIndex].archers[index].score = new Array(4).fill("#");
+      const teamIndex = this.getTeamIndex(teamIndexOrName);
+      const targetTeam = this.teams[teamIndex];
+      if(!targetTeam){console.warn('invalid team index');return;}
+      targetTeam.archers[index] ? targetTeam.archers[index].score = ["#","#","#","#"] : console.warn('T'+teamIndex.toString()+"-A"+index.toString()+"が存在しないことになっています");
     }
   }
 
@@ -313,24 +332,32 @@ export class Scoreboard {
     if(teamIndexOrName == undefined){
       for(let i = 0; i < this.teams.length; i++){
         for(let j = 0; j < this.teamSize; j++){
-          this.teams[i].archers[j].distance = 0;
+          const targetArcher = this.teams[i]?.archers[j];
+          if(targetArcher){
+            targetArcher.distance = 0;
+          }else{
+            console.warn('T'+i.toString()+"-A"+j.toString()+"が存在しないことになっています");
+          }
         }
       }
       return;
     }
     if(index == undefined){
-      let teamIndex = this.getTeamIndex(teamIndexOrName);
-      if(teamIndex < 0 || this.teams.length <= teamIndex) return;
+      const teamIndex = this.getTeamIndex(teamIndexOrName);
+      const targetTeam = this.teams[teamIndex];
+      if(!targetTeam){console.warn('invalid team index');return;}
       for(let i = 0; i < this.teamSize; i++){
-        this.teams[teamIndex].archers[i].distance = 0;
+        const archerIndex = i;
+        targetTeam.archers[archerIndex] ? targetTeam.archers[archerIndex].distance = 0 : console.warn('T'+teamIndex.toString()+"-A"+archerIndex.toString()+"が存在しないことになっています");
       }
       return
     }
     if(index != undefined){
-      let teamIndex = this.getTeamIndex(teamIndexOrName);
-      if(teamIndex < 0 || this.teams.length <= teamIndex) return;
+      const teamIndex = this.getTeamIndex(teamIndexOrName);
+      const targetTeam = this.teams[teamIndex];
+      if(!targetTeam){console.warn('invalid team index');return;}
       if(index < 0 || this.teamSize <= index) return;
-      this.teams[teamIndex].archers[index].distance = 0;
+      targetTeam.archers[index] ? targetTeam.archers[index].distance = 0 : console.warn('T'+teamIndex.toString()+"-A"+index.toString()+"が存在しないことになっています");
     }
   }
 
@@ -342,11 +369,12 @@ export class Scoreboard {
     }
     if(typeof teamIndexOrName == "string"){
       for(let i = 0; i < this.teams.length; i++){
-        if(this.teams[i].name == teamIndexOrName){
+        if(this.teams[i]?.name == teamIndexOrName){
           index = i;
           break;
         }
       }
+      console.warn('チーム名「'+teamIndexOrName+'」は見つかりませんでした')
     }
     return index;
   }
@@ -359,130 +387,146 @@ export class Scoreboard {
     });
     this.undone = [];
   }
+
   clearHistory(){
     this.history = [];
     this.undone = [];
   }
+
   undoHistory(){
     if(this.history.length == 0){
       console.warn("操作履歴はありません。");
       return;
     }
-    const target = this.history.pop();
-    const teamIndexStr   = target?.locale.split("-")[0];
-    const archerIndexStr = target?.locale.split("-")[1];
-    const dataIndexStr   = target?.locale.split("-")[2];
-    if(!teamIndexStr || !archerIndexStr || !dataIndexStr){
-      console.warn("操作履歴データの形式が異常です。");
+    const targetChange = this.history.pop();
+    if(!targetChange){
+      console.warn('操作履歴データがundefinedでした')
       return;
     }
+    this.undone.push(targetChange);
+    const teamIndexStr   = targetChange.locale.split("-")[0];
+    const archerIndexStr = targetChange.locale.split("-")[1];
+    const dataIndexStr   = targetChange.locale.split("-")[2];
+    if(!targetChange || !teamIndexStr || !archerIndexStr || !dataIndexStr){
+      console.warn("操作履歴データの形式が異常です。", targetChange);
+      return;
+    }
+  
     const teamIndex   = parseInt(  teamIndexStr?.replace(/(^T)/, ""));
     const archerIndex = parseInt(archerIndexStr?.replace(/(^A)/ ,""));
-    let dataIndex:number
-    if(this.method == MatchMethod.Distance){
-      dataIndex = parseInt(dataIndexStr?.replace(/(^D)/ ,""));
-    }else{
-      dataIndex = parseInt(dataIndexStr?.replace(/(^S)/ ,""));
+    const targetArcher = this.teams[teamIndex]?.archers[archerIndex];
+    if(!targetArcher){
+      console.warn('操作の対象となる射手がいないことになっています(T'+teamIndex.toString()+'-A'+archerIndex.toString()+')');
+      return;
     }
-    if(target){
-      this.undone.push(target);
-      if(this.method == MatchMethod.Distance){
-        this.teams[teamIndex].archers[archerIndex].distance = parseInt(target.before);
-      }else{
-        this.teams[teamIndex].archers[archerIndex].score[dataIndex] = target.before;
-      }
+    if(this.method == MatchMethod.Distance){
+      targetArcher.distance = parseInt(targetChange.before);
+    }else{
+      const dataIndex = parseInt(dataIndexStr?.replace(/(^S)/ ,""));
+      targetArcher.score[dataIndex] = targetChange.before;
     }
   }
+
   redoHistory(){
     if(this.undone.length == 0){
       console.warn("やり直せる操作履歴はありません。");
       return;
     }
-    const target = this.undone.pop();
-    const teamIndexStr   = target?.locale.split("-")[0];
-    const archerIndexStr = target?.locale.split("-")[1];
-    const dataIndexStr   = target?.locale.split("-")[2];
-    if(!teamIndexStr || !archerIndexStr || !dataIndexStr){
-      console.warn("操作履歴データの形式が異常です。");
+    const targetChange = this.undone.pop();
+    if(!targetChange){
+      console.warn('操作履歴データがundefinedでした')
       return;
     }
+    this.history.push(targetChange);
+    const teamIndexStr   = targetChange?.locale.split("-")[0];
+    const archerIndexStr = targetChange?.locale.split("-")[1];
+    const dataIndexStr   = targetChange?.locale.split("-")[2];
+    if(!teamIndexStr || !archerIndexStr || !dataIndexStr){
+      console.warn("操作履歴データの形式が異常です。", targetChange);
+      return;
+    }
+
     const teamIndex   = parseInt(  teamIndexStr?.replace(/(^T)/, ""));
     const archerIndex = parseInt(archerIndexStr?.replace(/(^A)/ ,""));
-    let dataIndex:number
-    if(this.method == MatchMethod.Distance){
-      dataIndex = parseInt(dataIndexStr?.replace(/(^D)/ ,""));
-    }else{
-      dataIndex = parseInt(dataIndexStr?.replace(/(^S)/ ,""));
+    const targetArcher = this.teams[teamIndex]?.archers[archerIndex];
+    if(!targetArcher){
+      console.warn('操作の対象となる射手がいないことになっています(T'+teamIndex.toString()+'-A'+archerIndex.toString()+')');
+      return;
     }
-    if(target){
-      this.history.push(target);
-      if(this.method == MatchMethod.Distance){
-        this.teams[teamIndex].archers[archerIndex].distance = parseInt(target.after);
-      }else{
-        this.teams[teamIndex].archers[archerIndex].score[dataIndex] = target.after;
-      }
+    if(this.method == MatchMethod.Distance){
+      targetArcher.distance = parseInt(targetChange.after);
+    }else{
+      const dataIndex = parseInt(dataIndexStr?.replace(/(^S)/ ,""));
+      targetArcher.score[dataIndex] = targetChange.after;
     }
   }
 
   async compare(other:Scoreboard):Promise<string[]>{
-    let misMatch:string[] = [];
+    const misMatch:string[] = [];
     //基本情報比較
     if(this.sheetId != other.sheetId){
-      misMatch.push("sheetId");
+      misMatch.push("sheetId:"+this.sheetId+":"+other.sheetId+":");
     }
     if(this.matchType != other.matchType){
-      misMatch.push("matchType");
+      misMatch.push("matchType:"+this.matchType+":"+other.matchType+":");
     }
     if(this.round != other.round){
-      misMatch.push("round");
+      misMatch.push("round:"+this.round+":"+other.round+":");
     }
-    if(this.group != other.group){
-      misMatch.push("group");
+    if(this.groupIndex != other.groupIndex){
+      misMatch.push("groupIndex:"+this.groupIndex+":"+other.groupIndex+":");
     }
     if(this.shajo != other.shajo){
-      misMatch.push("shajo");
+      misMatch.push("shajo:"+this.shajo+":"+other.shajo+":");
     }
     if(this.method != other.method){
-      misMatch.push("method");
+      misMatch.push("method:"+this.method+":"+other.method+":");
     }
     if(this.teamCount != other.teamCount){
-      misMatch.push("teamCount");
+      misMatch.push("teamCount:"+this.teamCount+":"+other.teamCount+":");
     }
     if(this.teamSize != other.teamSize){
-      misMatch.push("teamSize");
+      misMatch.push("teamSize:"+this.teamSize+":"+other.teamSize+":");
     }
 
     //要素数比較
     if(this.teams.length != other.teams.length){
-      misMatch.push("teams_length");
+      misMatch.push("teams_length:"+this.teams.length.toString()+":"+other.teams.length.toString()+":");
       return misMatch;
     }
     for(let i = 0; i < this.teams.length; i++){
-      if(this.teams[i].archers.length != other.teams[i].archers.length){
-        misMatch.push("T"+i.toString()+"_archersLength");
+      if(this.teams[i]?.archers.length != other.teams[i]?.archers.length){
+        misMatch.push("T"+i.toString()+"_archersLength:"+this.teams[i]?.archers.length.toString()+":"+other.teams[i]?.archers.length.toString()+":");
       }
     }
     if(misMatch.length != 0) return misMatch;
 
     //内容比較
     for(let i = 0; i < this.teams.length; i++){
-      if(this.teams[i].name != other.teams[i].name){
-        misMatch.push("T"+i.toString()+"_name");
+      const sourceTeam = this.teams[i];
+      const targetTeam = other.teams[i];
+      if(!sourceTeam && !targetTeam)continue;
+      if(!sourceTeam || !targetTeam){
+        misMatch.push("T"+i.toString()+":"+sourceTeam?.toString()+":"+targetTeam?.toString()+":");
+        break;
+      };
+      if(sourceTeam.name != targetTeam.name){
+        misMatch.push("T"+i.toString()+"_name:"+sourceTeam.name+":"+targetTeam.name+":");
       }
-      for(let j = 0; j < this.teams[i].archers.length; j++){
-        if(this.teams[i].archers[j].name != other.teams[i].archers[j].name){
-          misMatch.push("T"+i.toString()+"-A"+j.toString()+"_name");
+      for(let j = 0; j < sourceTeam.archers.length; j++){
+        if(sourceTeam.archers[j]?.name != targetTeam.archers[j]?.name){
+          misMatch.push("T"+i.toString()+"-A"+j.toString()+"_name:"+sourceTeam.archers[j]?.name+":"+targetTeam.archers[j]?.name+":");
         }
-        if(this.teams[i].archers[j].number != other.teams[i].archers[j].number){
-          misMatch.push("T"+i.toString()+"-A"+j.toString()+"_number");
+        if(sourceTeam.archers[j]?.number != targetTeam.archers[j]?.number){
+          misMatch.push("T"+i.toString()+"-A"+j.toString()+"_number:"+sourceTeam.archers[j]?.number.toString()+":"+targetTeam.archers[j]?.number.toString()+":");
         }
         for(let k = 0; k < 4; k++){
-          if(this.teams[i].archers[j].score[k] != other.teams[i].archers[j].score[k]){
-            misMatch.push("T"+i.toString()+"-A"+j.toString()+"_S"+k.toString());
+          if(sourceTeam.archers[j]?.score[k] != targetTeam.archers[j]?.score[k]){
+            misMatch.push("T"+i.toString()+"-A"+j.toString()+"_S"+k.toString()+":"+sourceTeam.archers[j]?.score[k]+":"+targetTeam.archers[j]?.score[k]+":");
           }
         }
-        if(this.teams[i].archers[j].distance != other.teams[i].archers[j].distance){
-          misMatch.push("T"+i.toString()+"-A"+j.toString()+"_distance");
+        if(sourceTeam.archers[j]?.distance != targetTeam.archers[j]?.distance){
+          misMatch.push("T"+i.toString()+"-A"+j.toString()+"_distance:"+sourceTeam.archers[j]?.distance.toString()+":"+targetTeam.archers[j]?.distance.toString()+":");
         }
       }
     }
@@ -490,20 +534,8 @@ export class Scoreboard {
   }
 
   async copy():Promise<Scoreboard>{
-    let newSB = new Scoreboard(this.sheetId, this.matchType, this.teamSize, this.teamCount);
-    newSB.round = this.round;
-    newSB.group = this.group;
-    newSB.shajo = this.shajo;
-    newSB.method = this.method;
-    for(let i = 0; i < this.teams.length; i++){
-      newSB.teams[i].name = this.teams[i].name;
-      for(let j = 0; j < this.teamSize; j++){
-        newSB.teams[i].archers[j].name = this.teams[i].archers[j].name;
-        newSB.teams[i].archers[j].number = this.teams[i].archers[j].number;
-        newSB.teams[i].archers[j].score = this.teams[i].archers[j].score.slice();
-        newSB.teams[i].archers[j].distance = this.teams[i].archers[j].distance;
-      }
-    }
+    const newSB = new Scoreboard(this.sheetId, this.matchType, this.teamSize, this.teamCount);
+    newSB.loadScoreboard(this);
     return newSB;
   }
 }

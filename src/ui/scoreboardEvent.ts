@@ -15,31 +15,31 @@ export function onSquareClick(e:Event){
     document.getElementById( "late-miss-button")?.remove();
     return;
   }
-  const hitButton       = document.createElement('button');
-  const missButton      = document.createElement('button');
-  const uncertainButton = document.createElement('button');
-  const eraseButton     = document.createElement('button');
-  const earlyHitButton  = document.createElement('button');
-  const lateHitButton   = document.createElement('button');
-  const earlyMissButton = document.createElement('button');
-  const lateMissButton  = document.createElement('button');
 
-  const types = ["miss", "hit",  "uncertain", "erase", "early-hit", "late-hit", "early-miss", "late-miss"];
-  const buttons = [missButton, hitButton, uncertainButton, eraseButton, earlyHitButton, lateHitButton, earlyMissButton, lateMissButton];
-  const texts = ['外', '中', '疑', '消', '早', '遅', '早', '遅'];
+  const buttonsInfo = [
+    {type:"miss",       text:"外"},
+    {type:"hit",        text:"中"},
+    {type:"uncertain",  text:"疑"},
+    {type:"erase",      text:"消"},
+    {type:"early-hit",  text:"早"},
+    {type:"late-hit",   text:"遅"},
+    {type:"early-miss", text:"早"},
+    {type:"late-miss",  text:"遅"},
+  ]
 
-  for(let i = 0; i < 8; i++){
-    buttons[i].setAttribute('id', types[i] + "-button");
-    buttons[i].setAttribute('class', 'score-button');
-    buttons[i].textContent = texts[i];
-    squareButton.after(buttons[i]);
+  buttonsInfo.forEach((info, i) => {
+    const buttonElem = document.createElement('button');
+    buttonElem.setAttribute('id', info.type + "-button");
+    buttonElem.setAttribute('class', 'score-button');
+    buttonElem.textContent = info.text;
+    squareButton.after(buttonElem);
 
-    buttons[i].addEventListener('click', onScoreButtonClick);
-  }
+    buttonElem.addEventListener('click', onScoreButtonClick);
+  })
 }
 
 function onScoreButtonClick(e:Event){
-  let currentSB = getCurrentScoreboard();
+  const currentSB = getCurrentScoreboard();
 
   const scoreButton = e.target as HTMLElement;
   const square = scoreButton.parentElement as HTMLElement;
@@ -56,46 +56,55 @@ function onScoreButtonClick(e:Event){
   const archerIndex = parseInt(archerElem.id.replace(/(^A)/, "")) - 1;
   const scoreIndex  = parseInt(squareElem.id.replace(/(^S)/, "")) - 1;
   const buttonLocale = `T${teamIndex}-A${archerIndex}-S${scoreIndex}`;
-  const beforeScore = currentSB.teams[teamIndex].archers[archerIndex].score[scoreIndex];
+  const targetArcher = currentSB.teams[teamIndex]?.archers[archerIndex];
+  if(!targetArcher){
+    console.warn('存在しない射手を参照しています');
+    return;
+  }
+  if(scoreIndex != 0 && scoreIndex != 1 && scoreIndex != 2 && scoreIndex != 3){
+    console.warn('scoreIndexが範囲外です');
+    return;
+  }
+  const beforeScore = targetArcher.score[scoreIndex];
   if (square) {
     square.classList.remove("hit", "miss", "uncertain", "early", "late");
 
     switch(scoreButton.id){
       case "hit-button":
         square.classList.add("hit");
-        currentSB.teams[teamIndex].archers[archerIndex].score[scoreIndex] = "o";
+        targetArcher.score[scoreIndex] = "o";
         break;
       case "miss-button":
         square.classList.add("miss");
-        currentSB.teams[teamIndex].archers[archerIndex].score[scoreIndex] = "x";
+        targetArcher.score[scoreIndex] = "x";
         break;
       case "uncertain-button":
         square.classList.add("uncertain");
-        currentSB.teams[teamIndex].archers[archerIndex].score[scoreIndex] = "?";
+        targetArcher.score[scoreIndex] = "?";
         break;
       case "erase-button":
-        currentSB.teams[teamIndex].archers[archerIndex].score[scoreIndex] = "#";
+        targetArcher.score[scoreIndex] = "#";
         break;
       case "early-hit-button":
         square.classList.add("early","hit");
-        currentSB.teams[teamIndex].archers[archerIndex].score[scoreIndex] = "E";
+        targetArcher.score[scoreIndex] = "E";
         break;
       case "late-hit-button":
         square.classList.add("late","hit");
-        currentSB.teams[teamIndex].archers[archerIndex].score[scoreIndex] = "L";
+        targetArcher.score[scoreIndex] = "L";
         break;
       case "early-miss-button":
         square.classList.add("early","miss");
-        currentSB.teams[teamIndex].archers[archerIndex].score[scoreIndex] = "e";
+        targetArcher.score[scoreIndex] = "e";
         break;
       case "late-miss-button":
         square.classList.add("late","miss");
-        currentSB.teams[teamIndex].archers[archerIndex].score[scoreIndex] = "l";
+        targetArcher.score[scoreIndex] = "l";
         break;
     }
 
-    if(beforeScore != currentSB.teams[teamIndex].archers[archerIndex].score[scoreIndex]){
-      currentSB.addHistory(buttonLocale, beforeScore, currentSB.teams[teamIndex].archers[archerIndex].score[scoreIndex]);
+    if(beforeScore != targetArcher.score[scoreIndex]){
+      currentSB.addHistory(buttonLocale, beforeScore, targetArcher.score[scoreIndex]);
       checkHistoryButtonState();
     }
 
@@ -109,8 +118,8 @@ function onScoreButtonClick(e:Event){
     document.getElementById( "late-miss-button")?.remove();
 
     let hitCount = 0;
-    for(let i=0; i<currentSB.teams[teamIndex].archers[archerIndex].score.length; i++){
-      if(currentSB.teams[teamIndex].archers[archerIndex].score[i] == "o"){
+    for(let i=0; i<targetArcher.score.length; i++){
+      if(targetArcher.score[i] == "o"){
         hitCount++;
       }
     }
@@ -119,8 +128,7 @@ function onScoreButtonClick(e:Event){
 }
 
 export function onDistanceInput(e:Event){
-  let currentSB = getCurrentScoreboard();
-  let savedSB = getCurrentSavedScoreboard();
+  const savedSB = getCurrentSavedScoreboard();
   const distanceInput = e.target as HTMLInputElement;
   const teamElem   = distanceInput.closest(  '.team') as HTMLElement;
   const archerElem = distanceInput.closest('.archer') as HTMLElement;
@@ -131,9 +139,14 @@ export function onDistanceInput(e:Event){
 
   const teamIndex   = parseInt(  teamElem.id.replace(/(^T)/, "")) - 1;
   const archerIndex = parseInt(archerElem.id.replace(/(^A)/, "")) - 1;
+  const targetArcher = savedSB.teams[teamIndex]?.archers[archerIndex];
+  if(!targetArcher){
+    console.warn('存在しない射手を参照しています');
+    return;
+  }
   GetElems.scoreSlideValue(teamIndex+1,archerIndex+1).textContent = distanceInput.value;
-  if(parseInt(distanceInput.value) != savedSB.teams[teamIndex].archers[archerIndex].distance){
-    GetElems.scoreSlideValue(teamIndex+1,archerIndex+1).textContent += "(" +savedSB.teams[teamIndex].archers[archerIndex].distance.toString() + ")";
+  if(parseInt(distanceInput.value) != targetArcher.distance){
+    GetElems.scoreSlideValue(teamIndex+1,archerIndex+1).textContent += "(" +targetArcher.distance.toString() + ")";
   }
 }
 
@@ -145,18 +158,22 @@ export function onDistanceChange(e:Event){
     console.warn("看的板のHTML構造が変です。");
     return;
   }
+  const currentSB = getCurrentScoreboard();
   const teamIndex   = parseInt(  teamElem.id.replace(/(^T)/, "")) - 1;
   const archerIndex = parseInt(archerElem.id.replace(/(^A)/, "")) - 1;
-
-  let currentSB = getCurrentScoreboard();
+  const targetArcher = currentSB.teams[teamIndex]?.archers[archerIndex];
+  if(!targetArcher){
+    console.warn('存在しない射手を参照しています');
+    return;
+  }
 
   const inputLocale = `T${teamIndex}-A${archerIndex}-D0`;
-  const before = currentSB.teams[teamIndex].archers[archerIndex].distance.toString();
+  const before = targetArcher.distance.toString();
 
-  currentSB.teams[teamIndex].archers[archerIndex].distance = parseInt(distanceInput.value);
+  targetArcher.distance = parseInt(distanceInput.value);
 
-  if(before != currentSB.teams[teamIndex].archers[archerIndex].distance.toString()){
-    currentSB.addHistory(inputLocale, before, currentSB.teams[teamIndex].archers[archerIndex].distance.toString())
+  if(before != targetArcher.distance.toString()){
+    currentSB.addHistory(inputLocale, before, targetArcher.distance.toString())
     checkHistoryButtonState();
   }
 }

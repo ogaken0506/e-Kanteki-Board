@@ -49,12 +49,12 @@ if(scriptVersionElem)scriptVersionElem.textContent = version;
 
 // GoogleログインとシートIDと試合の情報のjson(json5)を要求(構造でチェック)
 document.getElementById('info-file')!.addEventListener('change', function(e){
-  let elem = e.target as HTMLInputElement;
+  const elem = e.target as HTMLInputElement;
   if(elem.files){
-    let file_reader = new FileReader();
+    const file_reader = new FileReader();
     file_reader.onload = function(e){
       try{
-        let json = JSON5.parse(file_reader.result as string);
+        const json = JSON5.parse(file_reader.result as string);
         console.log("selectedFile",json);
         if(info.setInfo(JSON.stringify(json))){
           isValidInfoFile = true;
@@ -65,7 +65,9 @@ document.getElementById('info-file')!.addEventListener('change', function(e){
         console.log(e);
       }
     }
-    file_reader.readAsText(elem.files[0]);
+    if(elem.files[0]){
+      file_reader.readAsText(elem.files[0]);
+    }
   }
 });
 
@@ -83,24 +85,24 @@ document.getElementById('close-form')!.addEventListener('click', function(e){
 
 async function applyInfo(){
   changeCommunicationState(1);
-  //categoryを追加
-  for(let i=0; i<info.categories.length; i++){
-    Opt.addCategoryOption(info.categories[i].name, info.categories[i].background_color, i.toString());
-  }
-  //scoreboardを生成、初期化
+  //scoreboardsを空にしてcategoryを追加
   clearScoreboards()
   for(let i=0; i<info.categories.length; i++){
-    if(info.categories[i].match_type == MatchType.Team){
-      addScoreboard(info.categories[i].sheet_id, MatchType.Team,       info.categories[i].team_size, info.categories[i].team_count);
-    }else if(info.categories[i].match_type == MatchType.Individual){
-      addScoreboard(info.categories[i].sheet_id, MatchType.Individual, info.categories[i].team_size, info.categories[i].team_count);
+    const categoryInfo = info.categories[i];
+    if(categoryInfo){
+      Opt.addCategoryOption(categoryInfo.name, categoryInfo.background_color, i.toString());
+      if(categoryInfo.match_type == MatchType.Team){
+        addScoreboard(categoryInfo.sheet_id, MatchType.Team,       categoryInfo.team_size, categoryInfo.team_count);
+      }else if(categoryInfo.match_type == MatchType.Individual){
+        addScoreboard(categoryInfo.sheet_id, MatchType.Individual, categoryInfo.team_size, categoryInfo.team_count);
+      }
     }
   }
 
   //categoryのclickイベント登録
-  let categoryButtons = document.getElementsByClassName('category-input');
-  for(let i=0; i<categoryButtons.length; i++){
-    categoryButtons[i].addEventListener('click', onCategoryClick)
+  const categoryButtons = document.getElementsByClassName('category-input');
+  for(const categoryButton of categoryButtons){
+    categoryButton.addEventListener('click', onCategoryClick);
   }
 
   //射場の選択肢生成

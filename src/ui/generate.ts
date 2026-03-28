@@ -57,10 +57,8 @@ export function generateScoreboardElements(arg:Scoreboard){
           archerElem.querySelector('.archer-order')!.textContent = "落前"
         }else if(j == arg.teamSize - 1){
           archerElem.querySelector('.archer-order')!.textContent = "落"
-        }else if(9 < j){
-          archerElem.querySelector('.archer-order')!.textContent = (j+1).toString()+'的'
         }else{
-          archerElem.querySelector('.archer-order')!.textContent = orderText[j]
+          archerElem.querySelector('.archer-order')!.textContent = orderText[j] ?? (j+1).toString()+'的'
         }
         teamElem.appendChild(archerElem);
       }

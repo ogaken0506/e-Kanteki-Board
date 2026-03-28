@@ -12,8 +12,8 @@ export let expires_in:number = -1;
 let gapiInited = false;
 let gisInited = false;
 let isLoggedIn = false;
-let signinButton = document.getElementById("g_id_signin");
-let signinLabel = document.getElementById("signin-label");
+const signinButton = document.getElementById("g_id_signin");
+const signinLabel = document.getElementById("signin-label");
 
 function gapiLoaded() {
   gapi.load('client', initializeGapiClient);

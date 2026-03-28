@@ -1,8 +1,8 @@
 import { Scoreboard, MatchType } from "./class/scoreboard";
 import { expires_at, expires_in } from "./network/api"
 
-let scoreboards:Scoreboard[] = [];
-let savedScoreboards:Scoreboard[] = [];
+const scoreboards:Scoreboard[] = [];
+const savedScoreboards:Scoreboard[] = [];
 export let sampleScoreboard:Scoreboard = new Scoreboard("", MatchType.Team, 5, 1);
 export let sampleSavedScoreboard:Scoreboard = new Scoreboard("", MatchType.Team, 5, 1);
 let currentIndex = -1;
@@ -33,11 +33,11 @@ export function clearScoreboards(){
 
 export function getCurrentScoreboard():Scoreboard{
   if(currentIndex == -1)return sampleScoreboard;
-  return scoreboards[currentIndex];
+  return scoreboards[currentIndex] ?? sampleScoreboard;
 }
 export function getCurrentSavedScoreboard():Scoreboard{
   if(currentIndex == -1)return sampleSavedScoreboard;
-  return savedScoreboards[currentIndex];
+  return savedScoreboards[currentIndex] ?? sampleSavedScoreboard;
 }
 
 export function changeCommunicationState(arg:number, message?:string){
@@ -60,22 +60,22 @@ export function setSelectionMode(arg:boolean){
 }
 
 function enableSidebar(){
-  for(let i=0; i<categoryRadioButtons.length; i++){
-    categoryRadioButtons[i].removeAttribute('disabled');
+  for (const categoryRadioButton of categoryRadioButtons) {
+    categoryRadioButton.removeAttribute('disabled');
   }
-  let matchSelectElems = document.getElementsByClassName('match-select');
-  for(let i=0; i<matchSelectElems.length; i++){
-    matchSelectElems[i].removeAttribute('disabled');
+  const matchSelectElems = document.getElementsByClassName('match-select');
+  for(const matchSelectElem of matchSelectElems){
+    matchSelectElem.removeAttribute('disabled');
   }
-  let commonButtons = document.getElementsByClassName('sidebar-common-button');
-  for(let i=0; i<commonButtons.length; i++){
-    commonButtons[i].removeAttribute('disabled');
+  const commonButtons = document.getElementsByClassName('sidebar-common-button');
+  for(const commonButton of commonButtons){
+    commonButton.removeAttribute('disabled');
   }
   if(getCurrentScoreboard().method == "distance"){
     groupSelectElem.setAttribute('disabled', 'true');
     shajoSelectElem.setAttribute('disabled', 'true');
-    for(let i=0; i<teamSelectElems.length; i++){
-      teamSelectElems[i].setAttribute('disabled', 'true');
+    for(const teamSelectElem of teamSelectElems){
+      teamSelectElem.setAttribute('disabled', 'true');
     }
     nextButton.disabled = true;
     prevButton.disabled = true;
@@ -83,24 +83,24 @@ function enableSidebar(){
     groupSelectElem.setAttribute('disabled', 'true');
     shajoSelectElem.setAttribute('disabled', 'true');
   }else{
-    for(let i=0; i<teamSelectElems.length; i++){
-      teamSelectElems[i].setAttribute('disabled', 'true');
+    for(const teamSelectElem of teamSelectElems){
+      teamSelectElem.setAttribute('disabled', 'true');
     }
   }
   checkHistoryButtonState();
 }
 
 function disableSidebar(){
-  for(let i=0; i<categoryRadioButtons.length; i++){
-    categoryRadioButtons[i].setAttribute('disabled', 'true');
+  for(const categoryRadioButton of categoryRadioButtons) {
+    categoryRadioButton.setAttribute('disabled', 'true');
   }
-  let matchSelectElems = document.getElementsByClassName('match-select');
-  for(let i=0; i<matchSelectElems.length; i++){
-    matchSelectElems[i].setAttribute('disabled', 'true');
+  const matchSelectElems = document.getElementsByClassName('match-select');
+  for(const matchSelectElem of matchSelectElems){
+    matchSelectElem.setAttribute('disabled', 'true');
   }
-  let commonButtons = document.getElementsByClassName('sidebar-common-button');
-  for(let i=0; i<commonButtons.length; i++){
-    commonButtons[i].setAttribute('disabled', 'true');
+  const commonButtons = document.getElementsByClassName('sidebar-common-button');
+  for(const commonButton of commonButtons){
+    commonButton.setAttribute('disabled', 'true');
   }
 }
 

@@ -26,24 +26,34 @@ export async function onCategoryClick(e:Event){
   const target = e.target as HTMLInputElement;
   const selectedIndex:number = Number(target.value);
 
+  const selectedCategoryInfo = info.categories[selectedIndex];
+  if(!selectedCategoryInfo){
+    console.warn('invalid category index');
+    return;
+  }
   setCurrentIndex(selectedIndex);
-  let currentSB = getCurrentScoreboard();
-  let savedSB = getCurrentSavedScoreboard();
+  const currentSB = getCurrentScoreboard();
+  const savedSB = getCurrentSavedScoreboard();
   generateTeamSelectElem(currentSB.teams.length);
 
   changeCommunicationState(1);
-  document.getElementById('sidebar-content')!.style.backgroundColor = info.categories[selectedIndex].background_color;
-  let PromiseTeamList:Promise<string[]> = Comm.getTeamList(currentSB.sheetId, currentSB.round);
-  let roundsArray = await Comm.getRoundRawValue(currentSB.sheetId);
+  document.getElementById('sidebar-content')!.style.backgroundColor = selectedCategoryInfo.background_color;
+  const PromiseTeamList:Promise<string[]> = Comm.getTeamList(currentSB.sheetId, currentSB.round);
+  const roundsArray = await Comm.getRoundRawValue(currentSB.sheetId);
 
+  if(!roundsArray[0]){
+    console.warn('invalid rounds data');
+    return;
+  }
   //roundの選択肢削除&生成
   Opt.clearRoundOptions();
-  let nameColumn = roundsArray[0].indexOf("name");
-  let columnNameColumn = roundsArray[0].indexOf("column_name");
-  let methodColumn = roundsArray[0].indexOf("method");
+  const nameColumn = roundsArray[0].indexOf("name");
+  const columnNameColumn = roundsArray[0].indexOf("column_name");
+  const methodColumn = roundsArray[0].indexOf("method");
   if(nameColumn != -1 && columnNameColumn != -1 && methodColumn != -1){
-    for(let i=1; i<roundsArray.length; i++){// 1行目は項目名のため除く
-      Opt.addRoundOption(roundsArray[i][nameColumn], roundsArray[i][columnNameColumn], roundsArray[i][methodColumn])
+    const slicedRoundsArray = roundsArray.slice(1)// 1行目は項目名のため除く
+    for(const round of slicedRoundsArray){
+      Opt.addRoundOption(round[nameColumn], round[columnNameColumn], round[methodColumn])
     }
   }else if(nameColumn == -1){
     console.warn("name列が見つかりません");
@@ -55,8 +65,8 @@ export async function onCategoryClick(e:Event){
   roundSelectElem.selectedIndex = -1;
 
   //teamの選択肢削除&生成
-  let teamList = await PromiseTeamList;
-  Opt.updateTeamOptions(info.categories[selectedIndex].team_count, teamList, sidebarChangeEventHandler);
+  const teamList = await PromiseTeamList;
+  Opt.updateTeamOptions(selectedCategoryInfo.team_count, teamList, sidebarChangeEventHandler);
 
   //groupの選択肢削除&生成
   Opt.updateGroupOptions(teamList.length, info.venue.shajo_count*currentSB.teamCount)
@@ -64,16 +74,17 @@ export async function onCategoryClick(e:Event){
   //round,team,groupの選択をスコボに基づいて変更
   if(currentSB.round != ""){
     for(let i=0; i<roundSelectElem.options.length; i++){
-      if(roundSelectElem.options[i].value == currentSB.round){
+      if(roundSelectElem.options[i]?.value == currentSB.round){
         roundSelectElem.selectedIndex = i;
         break;
       }
     }
   }
   for(let i=0; i<currentSB.teams.length; i++){
-    if(currentSB.teams[i].name != ""){
+    const teamName = currentSB.teams[i]?.name;
+    if(teamName){
       for(let j=0; j<GetElems.teamSelect(i+1).options.length; j++){
-        if(GetElems.teamSelect(i+1).options[j].label == currentSB.teams[i].name){
+        if(GetElems.teamSelect(i+1).options[j]?.label == teamName){
           GetElems.teamSelect(i+1).selectedIndex = j;
           break;
         }
@@ -85,9 +96,9 @@ export async function onCategoryClick(e:Event){
     groupSelectElem.selectedIndex = Math.floor(GetElems.teamSelect(1).selectedIndex / (info.venue.shajo_count * currentSB.teamCount))
     shajoSelectElem.selectedIndex = Math.floor((GetElems.teamSelect(1).selectedIndex % (info.venue.shajo_count * currentSB.teamCount)) / currentSB.teamCount)
     currentSB.shajo = shajoSelectElem.selectedIndex;
-    currentSB.group = groupSelectElem.selectedIndex;
+    currentSB.groupIndex = groupSelectElem.selectedIndex;
     savedSB.shajo = shajoSelectElem.selectedIndex;
-    savedSB.group = groupSelectElem.selectedIndex;
+    savedSB.groupIndex = groupSelectElem.selectedIndex;
   }
 
   generateScoreboardElements(currentSB);
@@ -113,9 +124,9 @@ export async function onCategoryClick(e:Event){
 export async function sidebarChangeEventHandler(e:Event){
   const target = e.target as HTMLSelectElement;
   if (!target) return;
-  let currentSB = getCurrentScoreboard();
-  let savedSB = getCurrentSavedScoreboard();
-  let misMatch = await currentSB.compare(savedSB);
+  const currentSB = getCurrentScoreboard();
+  const savedSB = getCurrentSavedScoreboard();
+  const misMatch = await currentSB.compare(savedSB);
   let arrangedMisMatch:string="";
   for(let i=0; i<misMatch.length; i++){
     arrangedMisMatch += misMatch[i] + "\n";
@@ -124,24 +135,27 @@ export async function sidebarChangeEventHandler(e:Event){
   //未保存の記録がある場合は選択肢を元に戻す
   if(0 < misMatch.length){
     alert("未保存の記録があります\n"+arrangedMisMatch);
-    if(target.id == "round-select"){
+    if(target.id == "round-select"){           //段階の選択肢
       for(let i=0; i<target.options.length; i++){
-        if(target.options[i].value == currentSB.round){
+        if(target.options[i]?.value == currentSB.round){
           target.selectedIndex = i;
           break;
         }
       }
-    }else if(target.id.match(/^TS[0-9]+$/)){
-      let teamNum = parseInt(target.id.replace(/^TS/, ""));
-      for(let i=0; i<target.options.length; i++){
-        if(target.options[i].value == currentSB.teams[teamNum-1].name){
-          target.selectedIndex = i;
-          break;
+    }else if(target.id.match(/^TS[0-9]+$/)){   //組の選択肢
+      const teamNum = parseInt(target.id.replace(/^TS/, ""));
+      const teamName = currentSB.teams[teamNum-1]?.name;
+      if(teamName){
+        for(let i=0; i<target.options.length; i++){
+          if(target.options[i]?.value == teamName){
+            target.selectedIndex = i;
+            break;
+          }
         }
       }
-    }else if(target.id == "group-select"){
-      groupSelectElem.selectedIndex = currentSB.group;
-    }else if(target.id == "shajo-select"){
+    }else if(target.id == "group-select"){     //群の選択肢
+      groupSelectElem.selectedIndex = currentSB.groupIndex;
+    }else if(target.id == "shajo-select"){     //射場の選択肢
       shajoSelectElem.selectedIndex = currentSB.shajo;
     }
     return;
@@ -152,9 +166,9 @@ export async function sidebarChangeEventHandler(e:Event){
 
   if(target.id == "round-select"){
     currentSB.round = target.value;
-    let PromiseTeamList:Promise<string[]> = Comm.getTeamList(currentSB.sheetId, currentSB.round);
-    let teamList = await PromiseTeamList;
-    currentSB.setMethod(target.options[target.selectedIndex].dataset.method, teamList);
+    const PromiseTeamList:Promise<string[]> = Comm.getTeamList(currentSB.sheetId, currentSB.round);
+    const teamList = await PromiseTeamList;
+    currentSB.setMethod(target.options[target.selectedIndex]?.dataset.method, teamList);
     generateTeamSelectElem(currentSB.teams.length);
 
     //teamの選択肢削除&生成
@@ -179,14 +193,16 @@ export async function sidebarChangeEventHandler(e:Event){
     if(isDirectTeamChoice && currentSB.method != "distance"){
       //round変更前に選択していたteamがround変更後にも存在する場合は選択肢をそのteamに変更
       for(let i=0; i<currentSB.teams.length; i++){
+        const team = currentSB.teams[i];
+        if(!team) continue;
         for(let j=0; j<GetElems.teamSelect(i+1).options.length; j++){
-          if(GetElems.teamSelect(i+1).options[j].label == currentSB.teams[i].name){
+          if(GetElems.teamSelect(i+1).options[j]?.label == team.name){
             GetElems.teamSelect(i+1).selectedIndex = j;
             break;
           }
         }
         if(GetElems.teamSelect(i+1).selectedIndex == -1){
-          currentSB.teams[i].name = "";
+          team.name = "";
         }
       }
       if(GetElems.teamSelect(1).selectedIndex != -1){
@@ -194,40 +210,60 @@ export async function sidebarChangeEventHandler(e:Event){
         shajoSelectElem.selectedIndex = Math.floor((GetElems.teamSelect(1).selectedIndex % (info.venue.shajo_count * currentSB.teamCount)) / currentSB.teamCount)
       }
     }else if(!isDirectTeamChoice){
-      //round変更前に選択していたgroupがround変更後にも存在する場合は選択肢をそのgroupに変更
-      if(groupSelectElem.options.length >= currentSB.group){
-        groupSelectElem.selectedIndex = currentSB.group;
+      //round変更前に選択していたgroupIndexがround変更後にも存在する場合は選択肢をそのgroupIndexに変更
+      if(groupSelectElem.options.length >= currentSB.groupIndex){
+        groupSelectElem.selectedIndex = currentSB.groupIndex;
         for(let i=0; i<currentSB.teams.length; i++){
           GetElems.teamSelect(i+1).selectedIndex = (groupSelectElem.selectedIndex * info.venue.shajo_count + shajoSelectElem.selectedIndex)*currentSB.teamCount + i;
-          currentSB.teams[i].name = GetElems.teamSelect(i+1).value;
+          const team = currentSB.teams[i];
+          if(team){
+            team.name = GetElems.teamSelect(i+1).value;
+          }else{
+            console.warn('Scoreboard.Team['+i.toString()+']が存在しないことになっています');
+          }
         }
       }else{
-        currentSB.group = -1;
+        currentSB.groupIndex = -1;
       }
     }
   }
   if(target.id.match(/^TS[0-9]+$/)){
-    let teamNum = parseInt(target.id.replace(/^TS/, ""));
-    currentSB.teams[teamNum-1].name = target.value;
-    if(teamNum == 1){
-      groupSelectElem.selectedIndex = Math.floor(GetElems.teamSelect(1).selectedIndex / (info.venue.shajo_count * currentSB.teamCount))
-      shajoSelectElem.selectedIndex = Math.floor((GetElems.teamSelect(1).selectedIndex % (info.venue.shajo_count * currentSB.teamCount)) / currentSB.teamCount)
-      currentSB.shajo = shajoSelectElem.selectedIndex;
-      currentSB.group = groupSelectElem.selectedIndex;
+    const teamNum = parseInt(target.id.replace(/^TS/, ""));
+    const team = currentSB.teams[teamNum-1];
+    if(team){
+      team.name = target.value;
+      if(teamNum == 1){
+        groupSelectElem.selectedIndex = Math.floor(GetElems.teamSelect(1).selectedIndex / (info.venue.shajo_count * currentSB.teamCount))
+        shajoSelectElem.selectedIndex = Math.floor((GetElems.teamSelect(1).selectedIndex % (info.venue.shajo_count * currentSB.teamCount)) / currentSB.teamCount)
+        currentSB.shajo = shajoSelectElem.selectedIndex;
+        currentSB.groupIndex = groupSelectElem.selectedIndex;
+      }
+    }else{
+      console.warn('組の選択欄に対応するScoreboard.Teamが存在しないことになっています');
     }
   }
   if(target.id == "group-select"){
-    currentSB.group = parseInt(target.value);
+    currentSB.groupIndex = parseInt(target.value);
     for(let i=0; i<currentSB.teamCount; i++){
       GetElems.teamSelect(i+1).selectedIndex = (groupSelectElem.selectedIndex * info.venue.shajo_count + shajoSelectElem.selectedIndex)*currentSB.teamCount + i;
-      currentSB.teams[i].name = GetElems.teamSelect(i+1).value;
+      const team = currentSB.teams[i];
+      if(team){
+        team.name = GetElems.teamSelect(i+1).value;
+      }else{
+        console.warn('Scoreboard.Team['+i.toString()+']が存在しないことになっています');
+      }
     }
   }
   if(target.id == "shajo-select"){
     currentSB.shajo = parseInt(target.value);
     for(let i=0; i<currentSB.teamCount; i++){
       GetElems.teamSelect(i+1).selectedIndex = (groupSelectElem.selectedIndex * info.venue.shajo_count + shajoSelectElem.selectedIndex)*currentSB.teamCount + i;
-      currentSB.teams[i].name = GetElems.teamSelect(i+1).value;
+      const team = currentSB.teams[i];
+      if(team){
+        team.name = GetElems.teamSelect(i+1).value;
+      }else{
+        console.warn('Scoreboard.Team['+i.toString()+']が存在しないことになっています');
+      }
     }
   }
   changeCommunicationState(1);
@@ -259,8 +295,8 @@ export function onPrevClick(e:Event){
 
 export async function onRegisterClick(e:Event){
   if(isCommunicating)return;
-  let currentSB = getCurrentScoreboard();
-  let savedSB = getCurrentSavedScoreboard();
+  const currentSB = getCurrentScoreboard();
+  const savedSB = getCurrentSavedScoreboard();
   changeCommunicationState(1,"登録中...");
   await Comm.registerScore(currentSB);
   changeCommunicationState(0,"確認中...");
@@ -276,7 +312,7 @@ export async function onRegisterClick(e:Event){
 }
 
 export function onSelectionModeClick(e?:Event){
-  let currentSB = getCurrentScoreboard();
+  const currentSB = getCurrentScoreboard();
   if(isDirectTeamChoice){//[組]→[群,射場]
     setSelectionMode(false);
     for(let i=0; i<currentSB.teams.length; i++){
@@ -304,8 +340,8 @@ export function onSelectionModeClick(e?:Event){
 }
 
 export function onUndoClick(e:Event){
-  let currentSB = getCurrentScoreboard();
-  let savedSB = getCurrentSavedScoreboard();
+  const currentSB = getCurrentScoreboard();
+  const savedSB = getCurrentSavedScoreboard();
   currentSB.undoHistory();
   applyScoreboardData(currentSB);
   applySavedScore(savedSB);
@@ -313,8 +349,8 @@ export function onUndoClick(e:Event){
 }
 
 export function onRedoClick(e:Event){
-  let currentSB = getCurrentScoreboard();
-  let savedSB = getCurrentSavedScoreboard();
+  const currentSB = getCurrentScoreboard();
+  const savedSB = getCurrentSavedScoreboard();
   currentSB.redoHistory();
   applyScoreboardData(currentSB);
   applySavedScore(savedSB);
