@@ -371,11 +371,11 @@ export class Scoreboard {
       for(let i = 0; i < this.teams.length; i++){
         if(this.teams[i]?.name == teamIndexOrName){
           index = i;
-          break;
+          return index;
         }
       }
-      console.warn('チーム名「'+teamIndexOrName+'」は見つかりませんでした')
     }
+    console.warn('チーム名「'+teamIndexOrName+'」は見つかりませんでした')
     return index;
   }
 

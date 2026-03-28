@@ -12,9 +12,8 @@ export function applyScore(arg:Scoreboard) {
       const targetArcher = arg.teams[i]?.archers[j];
       if(!numberElem)console.warn('番号要素が見つかりません');
       if(!nameElem)console.warn('名前要素が見つかりません');
-      if(!countElem)console.warn('カウント要素が見つかりません');
       if(!targetArcher)console.warn('存在しない選手を参照しています');
-      if(!numberElem||!nameElem||!countElem||!targetArcher)return;
+      if(!numberElem||!nameElem||!targetArcher)return;
       numberElem.textContent = targetArcher.number.toString();
       nameElem.textContent   = targetArcher.name;
 
@@ -42,13 +41,17 @@ export function applyScore(arg:Scoreboard) {
             Square.classList.add('late','miss');
           }
         }
-        let hitCount = 0;
-        for(let k=0; k<4; k++){
-          if(targetArcher.score[k] == "o"){
-            hitCount++;
+        if(countElem){
+          let hitCount = 0;
+          for(let k=0; k<4; k++){
+            if(targetArcher.score[k] == "o"){
+              hitCount++;
+            }
           }
+          countElem.textContent = hitCount.toString() + "中";
+        }else{
+          console.warn('的中数カウント要素が見つかりません');
         }
-        countElem.textContent = hitCount.toString() + "中";
       }else{
         const scoreSlide = GetElems.scoreSlide(i+1,j+1);
         const scoreSlideValue = GetElems.scoreSlideValue(i+1,j+1);
