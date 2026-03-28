@@ -141,12 +141,15 @@ function polarToCartesian(cx:number, cy:number, r:number, angleDeg:number) {
 
 function describeSector(cx:number, cy:number, r:number, angle:number) {
   const timeOut = document.getElementById("timeout");
+  const timerSvg = document.getElementById('timer-svg');
   if (angle <= 0){
     return ""
   }else if(360 <= angle){
     timeOut?.setAttribute("fill", "rgba(255, 255, 255, 0.6)")
     return ""
   }else{
+    if(270 <= angle) timerSvg?.classList.add('blink');
+    else timerSvg?.classList.remove('blink');
     timeOut?.setAttribute("fill", "rgba(255, 255, 255, 0)")
   }
   const start = polarToCartesian(cx, cy, r, -90);

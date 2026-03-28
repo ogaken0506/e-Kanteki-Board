@@ -190,6 +190,15 @@ input[type='radio'] {
 /* ===============================================
     タイマー (.timer-wrapper)
     =============================================== */
+@keyframes blink-border {
+  0%{
+    border:#ff000000 2px solid;
+  }
+  100%{
+    border:#ff0000ff 2px solid;
+  }
+}
+
 #timer-wrapper {
   position: absolute;
   left:0;
@@ -202,6 +211,9 @@ input[type='radio'] {
   & svg{
     width: min(5vw, calc(5svh * (16 / 9)));
     height: min(6vw, calc(6svh * (16 / 9)));
-  
+    border:#ff000000 2px solid;
+  }
+  & svg.blink{
+    animation: blink-border 1s  ease infinite alternate;
   }
 }

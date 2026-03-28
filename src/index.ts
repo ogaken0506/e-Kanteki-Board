@@ -26,13 +26,14 @@ import {
   onCategoryClick,
   sidebarChangeEventHandler,
   onUndoClick,
-  onRedoClick
+  onRedoClick,
+  onTimerClick
 } from './ui/sidebarEvent';
 
 import JSON5 from 'json5'
 import { applyScoreboardData } from './ui/scoreboardView';
 
-const version = "ver.20260209"
+const version = "ver.20260328"
 
 let isValidInfoFile = false;
 
@@ -128,6 +129,9 @@ Array.from(document.getElementsByClassName('match-select')).forEach((select, ind
   select.addEventListener('change', sidebarChangeEventHandler)
 })
 
+setInterval(updateTimerState, 1000);
+document.getElementById('timer-svg')!.addEventListener('click', onTimerClick);
+
 // 適当なところをクリックしたら['外', '中', '疑', '消']ボタンは消しておく、通信の可否も戻す
 document.addEventListener('click', function (e) {
   const target = e.target as HTMLElement;
@@ -148,5 +152,3 @@ document.addEventListener('click', function (e) {
 
 //ダブルタップによるズーム防止
 document.addEventListener('dblclick', function(e){e.preventDefault()}, { passive: false });
-
-setInterval(updateTimerState, 1000);

@@ -77,8 +77,8 @@ function isTokenExpired(){
   return expires_at <= now;
 }
 
-async function refreshToken(){
-  if (gapi.client.getToken() === null || isTokenExpired()) {
+export async function refreshToken(force:boolean = false){
+  if (gapi.client.getToken() === null || isTokenExpired() || force) {
     tokenClient.requestAccessToken({prompt: 'select_account'});
   }
 }

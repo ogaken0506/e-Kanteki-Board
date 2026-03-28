@@ -14,6 +14,7 @@ import info   from '../class/info';
 import { generateScoreboardElements, generateTeamSelectElem } from './generate';
 import * as Opt from './selectOptions';
 import { applySavedScore, applyScoreboardData, clearScoreboard } from './scoreboardView';
+import { refreshToken } from '../network/api';
 
 const selectionModeButton = document.getElementById('selection-mode' ) as HTMLButtonElement;
 const registerButton      = document.getElementById('register')        as HTMLButtonElement;
@@ -355,4 +356,9 @@ export function onRedoClick(e:Event){
   applyScoreboardData(currentSB);
   applySavedScore(savedSB);
   checkHistoryButtonState();
+}
+
+export function onTimerClick(e:Event){
+  const timerSvg = e.currentTarget as HTMLElement | SVGElement;
+  if(timerSvg.classList.contains('blink')) refreshToken(true);
 }
