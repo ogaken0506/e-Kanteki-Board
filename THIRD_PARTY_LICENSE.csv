@@ -13,5 +13,6 @@
 "e-kanteki-board@1.0.0","MIT",""
 "esbuild@0.27.4","MIT","https://github.com/evanw/esbuild"
 "json5@2.2.3","MIT","https://github.com/json5/json5"
+"typescript@6.0.2","Apache-2.0","https://github.com/microsoft/TypeScript"
 "undici-types@7.18.2","MIT","https://github.com/nodejs/undici"
 "zod@4.3.6","MIT","https://github.com/colinhacks/zod"
