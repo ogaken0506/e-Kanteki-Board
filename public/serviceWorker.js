@@ -1,4 +1,4 @@
-var CACHE_NAME  = "scoreboard-cache-v20260328";
+var CACHE_NAME  = "scoreboard-cache-v20260401";
 const SERVER_URL = "https://ko-wgaca.f5.si/scoreboard/";
 var urlsToCache = [
     SERVER_URL + "index.html",
