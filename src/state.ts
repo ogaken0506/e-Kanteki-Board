@@ -162,3 +162,15 @@ function describeSector(cx:number, cy:number, r:number, angle:number) {
     `Z`
   ].join(' ');
 }
+
+export async function isScoreboardsDirty():Promise<boolean>{
+  if(scoreboards.length != savedScoreboards.length)  return true;
+  const maxIndex = scoreboards.length;
+  for(let i=0; i < maxIndex; i++){
+    const index = i;
+    if(!scoreboards[index] || ! savedScoreboards[index]) return true;
+    const diff = await scoreboards[index].compare(savedScoreboards[index]);
+    if(0 < diff.length) return true;
+  }
+  return false;
+}

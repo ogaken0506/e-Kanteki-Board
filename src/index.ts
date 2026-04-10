@@ -2,6 +2,7 @@ import {
   addScoreboard,
   changeCommunicationState,
   clearScoreboards,
+  isScoreboardsDirty,
   sampleScoreboard,
   updateTimerState
 } from './state'
@@ -33,7 +34,7 @@ import {
 import JSON5 from 'json5'
 import { applyScoreboardData } from './ui/scoreboardView';
 
-const version = "ver.20260401"
+const version = "ver.20260411"
 
 let isValidInfoFile = false;
 
@@ -152,3 +153,10 @@ document.addEventListener('click', function (e) {
 
 //ダブルタップによるズーム防止
 document.addEventListener('dblclick', function(e){e.preventDefault()}, { passive: false });
+
+window.addEventListener('beforeunload', async function (event) {
+  if(await isScoreboardsDirty()){
+    event.preventDefault();
+    event.returnValue = '';
+  };
+})
