@@ -220,7 +220,7 @@ export async function sidebarChangeEventHandler(e:Event){
           if(team){
             team.name = GetElems.teamSelect(i+1).value;
           }else{
-            console.warn('Scoreboard.Team['+i.toString()+']が存在しないことになっています');
+            console.warn('Scoreboard.Team['+i+']が存在しないことになっています');
           }
         }
       }else{
@@ -251,7 +251,7 @@ export async function sidebarChangeEventHandler(e:Event){
       if(team){
         team.name = GetElems.teamSelect(i+1).value;
       }else{
-        console.warn('Scoreboard.Team['+i.toString()+']が存在しないことになっています');
+        console.warn('Scoreboard.Team['+i+']が存在しないことになっています');
       }
     }
   }
@@ -263,7 +263,7 @@ export async function sidebarChangeEventHandler(e:Event){
       if(team){
         team.name = GetElems.teamSelect(i+1).value;
       }else{
-        console.warn('Scoreboard.Team['+i.toString()+']が存在しないことになっています');
+        console.warn('Scoreboard.Team['+i+']が存在しないことになっています');
       }
     }
   }

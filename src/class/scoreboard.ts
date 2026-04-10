@@ -304,7 +304,7 @@ export class Scoreboard {
           if(targetArcher){
             targetArcher.score = ["#","#","#","#"];
           }else{
-            console.warn('T'+i.toString()+"-A"+j.toString()+"が存在しないことになっています");
+            console.warn(`T${i}-A${j}が存在しないことになっています`);
           }
         }
       }
@@ -316,7 +316,7 @@ export class Scoreboard {
       if(!targetTeam){console.warn('invalid team index');return;}
       for(let i = 0; i < this.teamSize; i++){
         const archerIndex = i;
-        targetTeam.archers[archerIndex] ? targetTeam.archers[archerIndex].score = ["#","#","#","#"] : console.warn('T'+teamIndex.toString()+"-A"+archerIndex.toString()+"が存在しないことになっています");
+        targetTeam.archers[archerIndex] ? targetTeam.archers[archerIndex].score = ["#","#","#","#"] : console.warn(`T${teamIndex}-A${archerIndex}が存在しないことになっています`);
       }
       return
     }
@@ -324,7 +324,7 @@ export class Scoreboard {
       const teamIndex = this.getTeamIndex(teamIndexOrName);
       const targetTeam = this.teams[teamIndex];
       if(!targetTeam){console.warn('invalid team index');return;}
-      targetTeam.archers[index] ? targetTeam.archers[index].score = ["#","#","#","#"] : console.warn('T'+teamIndex.toString()+"-A"+index.toString()+"が存在しないことになっています");
+      targetTeam.archers[index] ? targetTeam.archers[index].score = ["#","#","#","#"] : console.warn(`T${teamIndex}-A${index}が存在しないことになっています`);
     }
   }
 
@@ -336,7 +336,7 @@ export class Scoreboard {
           if(targetArcher){
             targetArcher.distance = 0;
           }else{
-            console.warn('T'+i.toString()+"-A"+j.toString()+"が存在しないことになっています");
+            console.warn(`T${i}-A${j}が存在しないことになっています`);
           }
         }
       }
@@ -348,7 +348,7 @@ export class Scoreboard {
       if(!targetTeam){console.warn('invalid team index');return;}
       for(let i = 0; i < this.teamSize; i++){
         const archerIndex = i;
-        targetTeam.archers[archerIndex] ? targetTeam.archers[archerIndex].distance = 0 : console.warn('T'+teamIndex.toString()+"-A"+archerIndex.toString()+"が存在しないことになっています");
+        targetTeam.archers[archerIndex] ? targetTeam.archers[archerIndex].distance = 0 : console.warn(`T${teamIndex}-A${archerIndex}が存在しないことになっています`);
       }
       return
     }
@@ -357,7 +357,7 @@ export class Scoreboard {
       const targetTeam = this.teams[teamIndex];
       if(!targetTeam){console.warn('invalid team index');return;}
       if(index < 0 || this.teamSize <= index) return;
-      targetTeam.archers[index] ? targetTeam.archers[index].distance = 0 : console.warn('T'+teamIndex.toString()+"-A"+index.toString()+"が存在しないことになっています");
+      targetTeam.archers[index] ? targetTeam.archers[index].distance = 0 : console.warn(`T${teamIndex}-A${index}が存在しないことになっています`);
     }
   }
 
@@ -416,7 +416,7 @@ export class Scoreboard {
     const archerIndex = parseInt(archerIndexStr?.replace(/(^A)/ ,""));
     const targetArcher = this.teams[teamIndex]?.archers[archerIndex];
     if(!targetArcher){
-      console.warn('操作の対象となる射手がいないことになっています(T'+teamIndex.toString()+'-A'+archerIndex.toString()+')');
+      console.warn(`操作の対象となる射手がいないことになっています(T${teamIndex}-A${archerIndex})`);
       return;
     }
     if(this.method == MatchMethod.Distance){
@@ -450,7 +450,7 @@ export class Scoreboard {
     const archerIndex = parseInt(archerIndexStr?.replace(/(^A)/ ,""));
     const targetArcher = this.teams[teamIndex]?.archers[archerIndex];
     if(!targetArcher){
-      console.warn('操作の対象となる射手がいないことになっています(T'+teamIndex.toString()+'-A'+archerIndex.toString()+')');
+      console.warn(`操作の対象となる射手がいないことになっています(T${teamIndex}-A${archerIndex})`);
       return;
     }
     if(this.method == MatchMethod.Distance){

@@ -51,7 +51,7 @@ export async function getScore(arg:Scoreboard): Promise<Scoreboard> {
         for(let i=0; i<arg.teamCount; i++){
           const targetTeam = arg.teams[i];
           if(!targetTeam){
-            console.warn('Scoreboard.Team['+i.toString()+']が存在しないことになっています');
+            console.warn('Scoreboard.Team['+i+']が存在しないことになっています');
             continue;
           }
           //まず既存の記録チェック
@@ -94,7 +94,7 @@ export async function getScore(arg:Scoreboard): Promise<Scoreboard> {
         for(let i=0; i<arg.teams.length; i++){
           const targetTeam = arg.teams[i];
           if(!targetTeam){
-            console.warn('Scoreboard.Team['+i.toString()+']が存在しないことになっています');
+            console.warn('Scoreboard.Team['+i+']が存在しないことになっています');
             continue;
           }
           //まず既存の記録チェック
@@ -145,7 +145,7 @@ export async function registerScore(arg:Scoreboard){
       for(let i=0; i<arg.teamCount; i++){
         const team = arg.teams[i];
         if(!team){
-          console.warn('T'+i.toString()+'が存在しないことになっています');
+          console.warn('T'+i+'が存在しないことになっています');
           continue;
         }
         const row = data.map((eachRowData: any) => eachRowData[0]).indexOf(team.name);
@@ -167,7 +167,7 @@ export async function registerScore(arg:Scoreboard){
       for(let i=0; i<arg.teams.length; i++){
         const team = arg.teams[i];
         if(!team){
-          console.warn('T'+i.toString()+'が存在しないことになっています');
+          console.warn('T'+i+'が存在しないことになっています');
           continue;
         }
         const row = data.map((eachRowData: any) => eachRowData[0]).indexOf(team.name);
